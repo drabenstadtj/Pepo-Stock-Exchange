@@ -53,6 +53,23 @@ def test_buy_stock():
     response = requests.post(url, data=json.dumps(payload), headers={'Content-Type': 'application/json'})
     print(f'Buy Stock: {response.json()}')
 
+def test_sell_stock():
+    user_id = fetch_user_id('testuser')
+    if not user_id:
+        print("User ID not found, cannot proceed with test_sell_stock")
+        return
+
+    print(f"User ID for selling stock: {user_id}")
+
+    url = f'{BASE_URL}/transactions/sell'
+    payload = {
+        'user_id': user_id,
+        'stock_symbol': 'SFCM',
+        'quantity': 5
+    }
+    response = requests.post(url, data=json.dumps(payload), headers={'Content-Type': 'application/json'})
+    print(f'Sell Stock: {response.json()}')
+
 def test_get_portfolio():
     user_id = fetch_user_id('testuser')
     if not user_id:
@@ -87,5 +104,6 @@ if __name__ == '__main__':
     test_register()
     test_get_stocks()
     test_buy_stock()
+    test_sell_stock()  # Add this line to test selling stock
     test_get_portfolio()
     test_verify_transaction()
