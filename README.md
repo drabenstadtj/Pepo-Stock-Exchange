@@ -6,6 +6,7 @@ This project is a simulated stock market backend built using Flask, MongoDB, and
 
 ## Directory Structure
 
+```
 .
 ├── backend
 │ ├── app
@@ -32,6 +33,7 @@ This project is a simulated stock market backend built using Flask, MongoDB, and
 │ ├── .env
 │ └── pycache
 └── README.md
+```
 
 ## Features
 
