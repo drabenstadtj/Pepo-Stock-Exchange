@@ -56,3 +56,16 @@ class UserService:
         if user and 'portfolio' in user:
             return user['portfolio']
         return []
+
+    @staticmethod
+    def get_balance(user_id):
+        """
+        Fetch the user's balance by user ID.
+        Expects the 'user_id' as input.
+        Converts user_id to ObjectId.
+        Returns the user's balance if the user is found, otherwise returns an empty list.
+        """
+        user = mongo.db.users.find_one({"_id": ObjectId(user_id)}, {"balance": 1})
+        if user and 'balance' in user:
+            return user['balance']
+        return []

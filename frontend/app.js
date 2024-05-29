@@ -100,12 +100,19 @@ app.get('/dashboard', requireLogin, async (req, res) => {
     const user_id = response.data._id;
 
     // Fetch the portfolio using the user ID
-    const portfolioResponse = await axios.get('http://localhost:5000/portfolio', {
+    const portfolioResponse = await axios.get('http://localhost:5000/portfolio/stocks', {
+      params: { user_id }
+    });
+
+    // Fetch the portfolio using the user ID
+    const balanceResponse = await axios.get('http://localhost:5000/portfolio/balance', {
       params: { user_id }
     });
 
     const portfolio = portfolioResponse.data;
-    res.render('dashboard', { user: req.session.user, portfolio });
+    const balance = balanceResponse.data;
+    console.log(balance)
+    res.render('dashboard', { user: req.session.user, portfolio, balance });
   } catch (error) {
     console.error("Error fetching portfolio: ", error);
     res.status(500).send("Internal Server Error");
