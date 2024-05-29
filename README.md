@@ -14,6 +14,67 @@ The frontend, built with Express.js and Pug, provides a user-friendly interface 
 
 The frontend of the simulated stock market application is built with Express.js and Pug templating to provide an intuitive and engaging user interface. It includes user authentication pages (sign up and sign in), a dashboard for viewing and managing portfolios, a trading page for buying and selling stocks, and stock information pages. The frontend uses Pug templates for a consistent look and feel, with partials for reusable elements like the header and navigation. It communicates with the backend through API calls to ensure users have access to the latest data, making stock trading activities smooth and responsive.
 
+## Directory Structure
+
+```
+.
+├── frontend
+│ ├── views
+│ │ ├── signup.pug
+│ │ ├── signin.pug
+│ │ ├── dashboard.pug
+│ │ ├── about.pug
+│ │ ├── trade.pug
+│ │ ├── stocks.pug
+│ │ ├── index.pug
+│ │ ├── layout.pug
+│ │ ├── _header.pug
+│ │ ├── _navigation.pug
+│ │ └── _clock.pug
+│ ├── public
+│ │ └── stylesheets
+│ │     └── style.css
+│ └── app.js
+└── README.md
+```
+
+## Features
+
+- **User Authentication**: Users can register and log in to their accounts.
+- **Dashboard**: View and manage user portfolio, including owned stocks and balances.
+- **Stock Management**: View available stocks and their current prices.
+- **Transactions**: Buy and sell stocks through a user-friendly interface.
+- **About Page**: Information about the application and its functionalities.
+- **Responsive Design**: Ensures usability across different devices and screen sizes.
+
+## Pages and Templates
+
+### Authentication
+
+- **signup.pug**: Template for user registration.
+- **signin.pug**: Template for user login.
+
+### Dashboard
+
+- **dashboard.pug**: Displays user portfolio and options for trading.
+
+### Stocks
+
+- **stocks.pug**: Displays available stocks and their current prices.
+- **trade.pug**: Template for executing buy and sell transactions.
+
+### Other Pages
+
+- **index.pug**: Main landing page template.
+- **about.pug**: Provides information about the application.
+
+### Layout and Partials
+
+- **layout.pug**: Base layout template for consistent header and footer.
+- **_header.pug**: Partial template for the header.
+- **_navigation.pug**: Partial template for navigation.
+- **_clock.pug**: Partial template for displaying the current time.
+
 ## Backend
 
 ## Overview
