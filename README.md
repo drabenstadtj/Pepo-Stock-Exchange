@@ -4,15 +4,15 @@ The simulated stock market application is a comprehensive web-based platform des
 
 The backend is responsible for handling all the business logic, data processing, and user interactions with the database. It includes features like user authentication (registration and login), stock management (fetching current stock prices and sectors), transaction handling (buying and selling stocks), and portfolio management (viewing owned stocks and balances). Stock prices are dynamically updated based on Google Trends data to simulate real market interest, making the application more engaging and realistic.
 
-Scheduled tasks are implemented to update stock prices every 30 seconds, ensuring that the data remains current. This involves a script that fetches the latest trends and adjusts stock prices accordingly. The backend is structured with clear separation of concerns, organized into routes, services, and scripts to ensure maintainability and scalability.
+Scheduled tasks are implemented to update stock prices every hour, ensuring that the data remains current. This involves a script that fetches the latest trends and adjusts stock prices accordingly. The backend is structured with clear separation of concerns, organized into routes, services, and scripts to ensure maintainability and scalability.
 
-The frontend, built with Express.js and Pug, provides a user-friendly interface where users can sign up, log in, manage their portfolios, view stock information, and perform trades. Each part of the application is neatly organized into Pug templates for consistent layout and design. The interface is designed to be intuitive and responsive, offering a seamless user experience.
+The frontend, built with Express.js and Pug, provides a user-friendly interface where users can sign up, log in, manage their portfolios, view stock information, and perform trades. Each part of the application is neatly organized into Pug templates for consistent layout and design. The interface is designed to be intuitive and responsive.
 
 ## Frontend
 
 ## Overview
 
-The frontend of the simulated stock market application is built with Express.js and Pug templating to provide an intuitive and engaging user interface. It includes user authentication pages (sign up and sign in), a dashboard for viewing and managing portfolios, a trading page for buying and selling stocks, and stock information pages. The frontend uses Pug templates for a consistent look and feel, with partials for reusable elements like the header and navigation. It communicates with the backend through API calls to ensure users have access to the latest data, making stock trading activities smooth and responsive.
+The frontend of the simulated stock market application is built with Express.js and Pug templating. It includes user authentication pages (sign up and sign in), a dashboard for viewing and managing portfolios, a trading page for buying and selling stocks, and stock information pages. The frontend uses Pug templates for a consistent look and feel, with partials for reusable elements like the header and navigation. It communicates with the backend through API calls to ensure users have access to the latest data, making stock trading activities smooth and responsive.
 
 ## Directory Structure
 
@@ -135,7 +135,8 @@ This project is a simulated stock market backend built using Flask, MongoDB, and
 
 ### Portfolio
 
-- `GET /portfolio/`: Fetch the user's portfolio by user ID.
+- `GET /portfolio/balance`: Fetch the user's balance by user ID.
+- `GET /portfolio/stocks`: Fetch the user's stock portfolio by user ID.
 
 ## Scheduled Tasks
 
