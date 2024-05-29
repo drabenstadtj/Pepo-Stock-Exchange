@@ -4,6 +4,17 @@ body {
   background-color: #ffb787;
 }
 
+input, button{
+  background-color: #eeeeee;
+  border-radius: 4px;
+  box-sizing: border-box;
+  border-color: #ac7b5b;
+}
+
+button:hover {
+  background-color: #b4b3b3;
+}
+
 nav ul {
   list-style-type: none;
   margin: 0; /* Remove default margin */
@@ -138,10 +149,11 @@ main {
 .portfolio-table {
   width: 100%;
   border-collapse: collapse;
-  margin: 20px 0;
+  margin: auto;
   font-size: 1em;
   min-width: 400px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  max-width: 800px;
 }
 
 .portfolio-table thead tr {
@@ -172,3 +184,15 @@ main {
   font-weight: bold;
   color: #009879;
 }
+
+.signin-container {
+  text-align: center;
+  margin: auto;
+}
+
+.signin-container input {
+  margin-bottom: 5px;
+  padding: 8px;
+}
+
+
