@@ -28,3 +28,17 @@ def get_user_id():
         return jsonify({"_id": str(user_id)}), 200
     else:
         return jsonify({"error": "User not found"}), 404
+
+@bp.route('/verify_credentials', methods=['POST'])
+def verify_credentials():
+    """
+    Verify user credentials.
+    Expects JSON payload with 'username' and 'password'.
+    Returns a success message and user ID if credentials are correct.
+    """
+    data = request.get_json()
+    result = UserService.verify_credentials(data)
+    if result:
+        return jsonify({"message": "Credentials verified", "_id": str(result)}), 200
+    else:
+        return jsonify({"error": "Invalid username or password"}), 401

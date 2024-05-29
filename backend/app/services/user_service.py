@@ -33,6 +33,18 @@ class UserService:
         return None
 
     @staticmethod
+    def verify_credentials(data):
+        """
+        Verify user credentials.
+        Expects data to contain 'username' and 'password'.
+        Returns the user ID if credentials are correct, otherwise returns None.
+        """
+        user = mongo.db.users.find_one({"username": data['username'], "password": data['password']})
+        if user:
+            return user['_id']
+        return None
+
+    @staticmethod
     def get_portfolio(user_id):
         """
         Fetch the user's portfolio by user ID.

@@ -1,0 +1,18 @@
+doctype html
+html(lang="en")
+  head
+    title Pepo Stock Exchange
+    link(rel="stylesheet", href="/stylesheets/style.css")
+  body
+    .header-container
+        include _header 
+        include _clock
+    h1 User Sign-Up
+    form(action="/signup", method="POST")
+        label(for="username") Username:
+        input(type="text", name="username", id="username", required)
+        br
+        label(for="password") Password:
+        input(type="password", name="password", id="password", required)
+        br
+        button(type="submit") Sign Up

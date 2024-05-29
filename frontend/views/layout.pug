@@ -1,0 +1,13 @@
+doctype html
+html(lang="en")
+  head
+    title Pepo Stock Exchange
+    link(rel="stylesheet", href="/stylesheets/style.css")
+    script(src="https://code.jquery.com/jquery-3.6.0.min.js")
+  body
+    .header-container
+      include _header 
+      include _clock
+    include _navigation
+    hr
+    block content
