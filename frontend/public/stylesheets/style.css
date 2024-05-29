@@ -129,3 +129,46 @@ main {
   visibility: visible;
 } 
 
+.portfolio-container {
+  max-width: 800px;
+  margin: 0 auto;
+  
+}
+
+.portfolio-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 1em;
+  min-width: 400px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.portfolio-table thead tr {
+  background-color: #db9c72;
+  color: black;
+  text-align: left;
+  font-weight: bold;
+}
+
+.portfolio-table th,
+.portfolio-table td {
+  padding: 12px 15px;
+}
+
+.portfolio-table tbody tr {
+  border-bottom: 1px solid #dddddd;
+}
+
+.portfolio-table tbody tr:nth-of-type(even) {
+  background-color: #f3f3f3;
+}
+
+.portfolio-table tbody tr:last-of-type {
+  border-bottom: 2px solid #db9c72;
+}
+
+.portfolio-table tbody tr.active-row {
+  font-weight: bold;
+  color: #009879;
+}

@@ -90,8 +90,26 @@ app.get('/about', requireLogin, (req, res) => {
   res.render('about', { user: req.session.user });
 });
 
-app.get('/dashboard', requireLogin, (req, res) => {
-  res.render('dashboard', { user: req.session.user });
+
+app.get('/dashboard', requireLogin, async (req, res) => {
+  try {
+    // Fetch the user ID using the username from the session
+    const response = await axios.get('http://localhost:5000/auth/get_user_id', {
+      params: { username: req.session.user }
+    });
+    const user_id = response.data._id;
+
+    // Fetch the portfolio using the user ID
+    const portfolioResponse = await axios.get('http://localhost:5000/portfolio', {
+      params: { user_id }
+    });
+
+    const portfolio = portfolioResponse.data;
+    res.render('dashboard', { user: req.session.user, portfolio });
+  } catch (error) {
+    console.error("Error fetching portfolio: ", error);
+    res.status(500).send("Internal Server Error");
+  }
 });
 
 app.get('/trade', requireLogin, (req, res) => {

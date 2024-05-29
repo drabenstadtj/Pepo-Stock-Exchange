@@ -1,4 +1,22 @@
 extends layout 
 
 block content
-  p This is the dashboard.
+  h1 Welcome, #{user}
+
+  h2 Your Portfolio
+  if portfolio.length
+    .portfolio-container 
+    table.portfolio-table
+      thead
+        tr
+          th Stock Symbol
+          th Quantity
+          th Price
+      tbody
+        each item in portfolio
+          tr
+            td= item.stock_symbol
+            td= item.quantity
+            td= item.price.toFixed(2)
+  else
+    p You have no stocks in your portfolio.
