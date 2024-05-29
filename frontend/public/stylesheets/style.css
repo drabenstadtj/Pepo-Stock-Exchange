@@ -58,3 +58,74 @@ main {
   max-width: 700px;
   margin: auto;
 }
+
+.green {
+  color: green;
+}
+
+.red {
+  color: red;
+}
+
+
+.stocks-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.stocks-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.stocks-table th, .stocks-table td {
+  border: 1px solid #000000;
+  padding: 8px;
+  text-align: center;
+  position: relative;
+}
+
+.stocks-table th {
+  background-color: #db9c72;
+}
+
+.stocks-table tr:hover {
+  background-color: #fccfb0;  /* Change this to your desired hover color */
+}
+
+.stocks-table .positive-change {
+  color: green;
+}
+
+.stocks-table .negative-change {
+  color: red;
+}
+
+
+.stock-popup {
+  position: relative;
+}
+
+
+.stock-popup .popuptext {
+  visibility: hidden;
+  width: 200px;
+  background-color: #fccfb0;
+  color: #000;
+  text-align: left;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 10px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+.stock-popup:hover .popuptext {
+  visibility: visible;
+} 
+

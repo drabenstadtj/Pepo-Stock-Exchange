@@ -1,0 +1,33 @@
+extends layout 
+
+block content
+  head
+    style.
+      .positive-change {
+        color: green;
+      }
+      .negative-change {
+        color: red;
+      }
+  body
+    h1 Stocks
+    .stocks-container
+      table.stocks-table
+        thead
+          tr
+            th Symbol
+            th Price
+            th Change
+        tbody
+          each stock in stocks
+            tr
+              td.stock-popup
+                span= stock.symbol
+                .popuptext
+                  h3 #{stock.symbol}
+                  p Name: #{stock.name}
+                  p Sector: #{stock.sector}
+                  p Low: #{stock.low.toFixed(2)}
+                  p High: #{stock.high.toFixed(2)}
+              td= stock.price.toFixed(2)
+              td(class=stock.change >= 0 ? 'positive-change' : 'negative-change')= stock.change.toFixed(2)

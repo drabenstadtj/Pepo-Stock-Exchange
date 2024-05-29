@@ -98,6 +98,19 @@ app.get('/trade', requireLogin, (req, res) => {
   res.render('trade', { user: req.session.user });
 });
 
+// Route to fetch and display stocks from Flask backend
+app.get('/stocks', requireLogin, async (req, res) => {
+  try {
+    const response = await axios.get('http://localhost:5000/stocks'); // Update the URL if necessary
+    const stocks = response.data;
+
+    res.render('stocks', { stocks, user: req.session.user });
+  } catch (error) {
+    console.error("Error fetching stocks: ", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
 // Catch 404 and forward to error handler
 app.use((req, res, next) => {
   res.status(404).send('Page not found');
