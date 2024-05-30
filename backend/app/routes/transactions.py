@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, session
 from app.services.transaction_service import TransactionService
 
 # Create a Blueprint for transaction-related routes
@@ -6,25 +6,22 @@ bp = Blueprint('transactions', __name__, url_prefix='/transactions')
 
 @bp.route('/buy', methods=['POST'])
 def buy_stock():
-    """
-    Buy a stock.
-    Expects JSON payload with 'user_id', 'stock_symbol', and 'quantity'.
-    Fetches the current stock price and processes the purchase.
-    Returns a success message if the purchase is successful, or an error message otherwise.
-    """
+    if 'user_id' not in session:
+        return jsonify({"error": "User not logged in"}), 401
+
     data = request.get_json()
+    data['user_id'] = session['user_id']
     result = TransactionService.buy_stock(data)
     return jsonify(result)
 
 @bp.route('/sell', methods=['POST'])
 def sell_stock():
-    """
-    Sell a stock.
-    Expects JSON payload with 'user_id', 'stock_symbol', and 'quantity'.
-    Fetches the current stock price and processes the sale.
-    Returns a success message if the sale is successful, or an error message otherwise.
-    """
+    if 'user_id' not in session:
+        return jsonify({"error": "User not logged in"}), 401
+
     data = request.get_json()
+    print(data)
+    data['user_id'] = session['user_id']
     result = TransactionService.sell_stock(data)
     return jsonify(result)
 

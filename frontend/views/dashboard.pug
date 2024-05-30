@@ -1,23 +1,24 @@
 extends layout 
 
 block content
-  h1 Welcome, #{user}
+  .container
+    h1 Welcome, #{user}
 
-  h2 Your Portfolio
-  if portfolio.length
-    h2 Balance: $#{balance.toFixed(2)}
-    .portfolio-container 
-    table.portfolio-table
-      thead
-        tr
-          th Stock Symbol
-          th Quantity
-          th Price
-      tbody
-        each item in portfolio
+    if balance
+      p Balance: $#{balance.toFixed(2)}
+    if portfolio.length
+      .portfolio-container 
+      table.portfolio-table
+        thead
           tr
-            td= item.stock_symbol
-            td= item.quantity
-            td= item.price.toFixed(2)
-  else
-    p You have no stocks in your portfolio.
+            th Stock Symbol
+            th Quantity
+            th Price
+        tbody
+          each item in portfolio
+            tr
+              td= item.stock_symbol
+              td= item.quantity
+              td= item.price.toFixed(2)
+    else
+      p You have no stocks in your portfolio.

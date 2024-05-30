@@ -6,37 +6,36 @@ html(lang="en")
     script(src="https://code.jquery.com/jquery-3.6.0.min.js")
   body
     .header-container
-        include _header 
-        include _clock
-        
+      include _header 
+      include _clock
+
     .signin-container
       h1 Sign In
 
       form(action='/signin', method='post', onsubmit='return trimInput()')
-          div
+        div
           //- label(for='username') Username:
           input(type='text', id='username', name='username', placeholder='Username', required)
-          div
+        div
           //- label(for='password') Password:
           input(type='password', id='password', name='password', placeholder='Password', required)
-          div
+        div
           if error
-          div.alert.alert-danger
-          p #{error}
-          button(type='submit') Sign In
+            div.alert.alert-danger
+              p #{error}
+        button(type='submit') Sign In
 
       h1 Sign Up 
-      form(action='signup')
-          button(href="/signup") Sign Up
+      form(action='/signup', method='get')
+        button(type='submit') Sign Up
 
     script.
-        function trimInput() {
+      function trimInput() {
         var username = document.getElementById('username');
         var password = document.getElementById('password');
         if (username && password) {
-            username.value = username.value.trim();
-            password.value = password.value.trim();
+          username.value = username.value.trim();
+          password.value = password.value.trim();
         }
         return true; // Ensure form submission continues
-        }
-    
+      }

@@ -30,7 +30,6 @@ class StockService:
         Fetch the current price of a stock by its symbol.
         Returns the price if the stock is found, otherwise returns None.
         """
-        print(stock_symbol)
         stock = mongo.db.stocks.find_one({"symbol": stock_symbol})
         if stock:
             return stock['price']

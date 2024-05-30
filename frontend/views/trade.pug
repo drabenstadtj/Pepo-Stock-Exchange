@@ -1,4 +1,119 @@
-extends layout 
+extends layout
 
 block content
-  p This is the trading interface
+  script.
+    $(document).ready(function() {
+      const userId = $('#userId').val();
+
+      $('#getPriceButton').click(function() {
+        const symbol = $('#stockSymbol').val();
+        if (symbol) {
+          $.get(`http://localhost:5000/stocks/${symbol}`, function(data) {
+            if (data.price) {
+              const roundedPrice = parseFloat(data.price).toFixed(2);
+              $('#stockPrice').val(roundedPrice);
+              calculateTotalPrice();
+            } else {
+              alert('Stock not found');
+            }
+          }).fail(function() {
+            alert('Error fetching stock price');
+          });
+        } else {
+          alert('Please enter a stock symbol');
+        }
+      });
+
+      $('#numberOfShares').on('input', function() {
+        calculateTotalPrice();
+      });
+
+      function calculateTotalPrice() {
+        const price = parseFloat($('#stockPrice').val());
+        const shares = parseInt($('#numberOfShares').val());
+        if (!isNaN(price) && !isNaN(shares)) {
+          const totalPrice = (price * shares).toFixed(2);
+          $('#totalPrice').val(totalPrice);
+        } else {
+          $('#totalPrice').val('');
+        }
+      }
+
+      $('#buyButton').click(function(e) {
+        e.preventDefault();
+        submitTransaction('buy');
+      });
+
+      $('#sellButton').click(function(e) {
+        e.preventDefault();
+        submitTransaction('sell');
+      });
+
+      function submitTransaction(type) {
+        const stockSymbol = $('#stockSymbol').val();
+        const quantity = parseInt($('#numberOfShares').val());
+
+        if (!stockSymbol || isNaN(quantity)) {
+          alert('Please fill in all fields');
+          return;
+        }
+
+        const url = `http://localhost:5000/transactions/${type}`;
+        const data = {
+          user_id: userId,
+          stock_symbol: stockSymbol,
+          quantity: quantity
+        };
+
+        $.ajax({
+          url: url,
+          type: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify(data),
+          success: function(response) {
+            alert(response.message || 'Transaction successful');
+          },
+          error: function(response) {
+            alert(response.responseJSON.error || 'Transaction failed');
+          }
+        });
+      }
+    });
+
+  if balance
+    p Balance: $#{balance.toFixed(2)}
+
+  if portfolio.length
+    .portfolio-container 
+      table.portfolio-table
+        thead
+          tr
+            th Stock Symbol
+            th Quantity
+            th Price
+        tbody
+          each item in portfolio
+            tr
+              td= item.stock_symbol
+              td= item.quantity
+              td= item.price.toFixed(2)
+  else
+    p You have no stocks in your portfolio.
+
+  form
+    div
+      label(for="stockSymbol") Stock Symbol:
+      input(type="text" id="stockSymbol" name="stockSymbol" required)
+      button(type="button" id="getPriceButton") Get Price
+    div
+      label(for="stockPrice") Stock Price:
+      input(type="text" id="stockPrice" name="stockPrice" readonly)
+    div
+      label(for="numberOfShares") Number of Shares:
+      input(type="number" id="numberOfShares" name="numberOfShares" min="1")
+    div
+      label(for="totalPrice") Total Price:
+      input(type="text" id="totalPrice" name="totalPrice" readonly)
+    div
+      button(type="button" id="buyButton") Buy
+      button(type="button" id="sellButton") Sell

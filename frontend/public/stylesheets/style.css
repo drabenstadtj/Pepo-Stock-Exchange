@@ -4,7 +4,8 @@ body {
   background-color: #ffb787;
 }
 
-input, button{
+input,
+button {
   background-color: #eeeeee;
   border-radius: 4px;
   box-sizing: border-box;
@@ -78,7 +79,6 @@ main {
   color: red;
 }
 
-
 .stocks-container {
   max-width: 800px;
   margin: 0 auto;
@@ -90,7 +90,8 @@ main {
   border-collapse: collapse;
 }
 
-.stocks-table th, .stocks-table td {
+.stocks-table th,
+.stocks-table td {
   border: 1px solid #000000;
   padding: 8px;
   text-align: center;
@@ -102,7 +103,7 @@ main {
 }
 
 .stocks-table tr:hover {
-  background-color: #fccfb0;  /* Change this to your desired hover color */
+  background-color: #fccfb0; /* Change this to your desired hover color */
 }
 
 .stocks-table .positive-change {
@@ -113,11 +114,9 @@ main {
   color: red;
 }
 
-
 .stock-popup {
   position: relative;
 }
-
 
 .stock-popup .popuptext {
   visibility: hidden;
@@ -133,17 +132,16 @@ main {
   bottom: 125%;
   left: 50%;
   transform: translateX(-50%);
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
 }
 
 .stock-popup:hover .popuptext {
   visibility: visible;
-} 
+}
 
 .portfolio-container {
   max-width: 800px;
   margin: 0 auto;
-  
 }
 
 .portfolio-table {
@@ -195,4 +193,7 @@ main {
   padding: 8px;
 }
 
-
+.container {
+  max-width: 800px;
+  margin: auto;
+}
