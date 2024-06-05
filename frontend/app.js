@@ -4,53 +4,95 @@ const debug = require('debug')('app');
 const axios = require('axios');
 const path = require('path');
 const dotenv = require('dotenv');
+const jwt = require('jsonwebtoken');
 
-dotenv.config();
+// Load environment variables from .env file located in the parent directory
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 const app = express();
 const port = process.env.PORT || 3000;
 
+// Verify that SECRET_KEY and SESSION_SECRET are set
+const secretKey = process.env.SECRET_KEY;
+const sessionSecret = process.env.SESSION_SECRET;
+
+if (!secretKey) {
+  console.error('Error: SECRET_KEY is not set in the environment variables.');
+  process.exit(1);
+}
+
+if (!sessionSecret) {
+  console.error('Error: SESSION_SECRET is not set in the environment variables.');
+  process.exit(1);
+}
+
+// Set the view engine to Pug and specify the views directory
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
+// Middleware to parse URL-encoded bodies and serve static files
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Configure session middleware
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'your-secret-key',
+  secret: process.env.SESSION_SECRET || 'your-session-secret-key', // Use SESSION_SECRET from .env file or fallback
   resave: false,
   saveUninitialized: true,
   cookie: {
-    sameSite: 'None', // Ensures the cookie is sent in all contexts
+    sameSite: 'lax', // Ensures the cookie is sent in all contexts
     secure: process.env.NODE_ENV === 'production', // Set to true in production environment
-    maxAge: 60000
+    maxAge: 60000 // Cookie expiration time
   }
 }));
 
-// Middleware to check if the user is logged in
 const requireLogin = (req, res, next) => {
-  if (req.session && req.session.user) {
-    next();
+  debug(`Checking if user is logged in: ${req.session.user}`);
+  if (req.session && req.session.token) {
+    try {
+      const secretKey = process.env.SECRET_KEY;
+      if (!secretKey) {
+        throw new Error("SECRET_KEY not set in environment");
+      }
+      const decoded = jwt.verify(req.session.token, secretKey);
+      req.user = decoded;
+      next(); // User is logged in, proceed to the next middleware
+    } catch (err) {
+      debug(`Token verification failed: ${err.message}`);
+      res.redirect('/signin'); // Redirect to sign-in page if token is invalid
+    }
   } else {
     debug('User not logged in, redirecting to /signin');
-    res.redirect('/signin');
+    res.redirect('/signin'); // Redirect to sign-in page if not logged in
   }
 };
 
+
+// Middleware to attach token to headers
+const attachToken = (req, res, next) => {
+  if (req.session && req.session.token) {
+    req.headers['Authorization'] = `Bearer ${req.session.token}`;
+  }
+  next();
+};
+
 // Routes
+
+// Render the sign-up page
 app.get('/signup', (req, res) => {
   res.render('signup', { user: req.session.user });
 });
 
+// Handle sign-up form submission
 app.post('/signup', async (req, res) => {
   const { username, password } = req.body;
   try {
     const response = await axios.post('http://localhost:5000/auth/register', { username, password });
     if (response.data.message === 'User registered successfully') {
-      req.session.user = username;
+      req.session.user = username; // Set the session user
+      req.session.token = response.data.token; // Set the session token
       debug(`User ${username} registered successfully`);
-      res.redirect('/');
+      res.redirect('/'); // Redirect to home page
     } else {
       debug(`Signup failed for user ${username}: ${response.data.message}`);
       res.send('Signup failed!');
@@ -61,6 +103,7 @@ app.post('/signup', async (req, res) => {
   }
 });
 
+// Render the sign-in page
 app.get('/signin', (req, res) => {
   const error = req.query.error;
   res.render('signin', { error, user: req.session.user });
@@ -69,11 +112,21 @@ app.get('/signin', (req, res) => {
 app.post('/signin', async (req, res) => {
   const { username, password } = req.body;
   try {
+    debug(`Received signin request for user: ${username}`);
+    
     const response = await axios.post('http://localhost:5000/auth/verify_credentials', { username, password });
     if (response.data.message === 'Credentials verified') {
-      req.session.user = username;
+      req.session.user = username; // Set the session user
+      req.session.token = response.data.token; // Set the session token
       debug(`User ${username} signed in successfully`);
-      res.redirect('/');
+      req.session.save(err => {
+        if (err) {
+          debug(`Session save error: ${err.message}`);
+          res.redirect('/signin?error=Session error');
+        } else {
+          res.redirect('/'); // Redirect to home page
+        }
+      });
     } else {
       debug(`Sign in failed for user ${username}: Invalid credentials`);
       res.redirect('/signin?error=Invalid username or password');
@@ -84,81 +137,57 @@ app.post('/signin', async (req, res) => {
   }
 });
 
+// Handle user logout
 app.get('/logout', (req, res) => {
   req.session.destroy(err => {
     if (err) {
       debug(`Logout error: ${err.message}`);
       return res.redirect('/');
     }
-    res.clearCookie('connect.sid');
+    res.clearCookie('connect.sid'); // Clear the session cookie
     debug(`User logged out successfully`);
-    res.redirect('/signin');
+    res.redirect('/signin'); // Redirect to sign-in page
   });
 });
 
-app.get('/', requireLogin, (req, res) => {
+// Render the home page
+app.get('/', requireLogin, attachToken, (req, res) => {
   debug(`Rendering home page for user ${req.session.user}`);
   res.render('index', { user: req.session.user });
 });
 
-app.get('/about', requireLogin, (req, res) => {
+// Render the about page
+app.get('/about', requireLogin, attachToken, (req, res) => {
   debug(`Rendering about page for user ${req.session.user}`);
   res.render('about', { user: req.session.user });
 });
 
-app.get('/dashboard', requireLogin, async (req, res) => {
+// Render the trade page with user's portfolio and balance
+app.get('/trade', requireLogin, attachToken, async (req, res) => {
   try {
-    const response = await axios.get('http://localhost:5000/auth/get_user_id', {
-      params: { username: req.session.user }
-    });
-    const user_id = response.data._id;
+    const token = req.session.token;  // Use the token stored in the session
 
     const portfolioResponse = await axios.get('http://localhost:5000/portfolio/stocks', {
-      params: { user_id }
+      headers: { 'Authorization': `Bearer ${token}` }
     });
 
     const balanceResponse = await axios.get('http://localhost:5000/portfolio/balance', {
-      params: { user_id }
+      headers: { 'Authorization': `Bearer ${token}` }
     });
 
     const portfolio = portfolioResponse.data;
     const balance = balanceResponse.data;
 
     debug(`Fetched portfolio and balance for user ${req.session.user}`);
-    res.render('dashboard', { user: req.session.user, portfolio, balance });
+    res.render('trade', { user: req.session.user, portfolio, balance, token });
   } catch (error) {
     debug(`Error fetching portfolio for user ${req.session.user}: ${error.message}`);
     res.status(500).send("Internal Server Error");
   }
 });
 
-app.get('/trade', requireLogin, async (req, res) => {
-  try {
-    const response = await axios.get('http://localhost:5000/auth/get_user_id', {
-      params: { username: req.session.user }
-    });
-    const user_id = response.data._id;
-
-    const portfolioResponse = await axios.get('http://localhost:5000/portfolio/stocks', {
-      params: { user_id }
-    });
-
-    const balanceResponse = await axios.get('http://localhost:5000/portfolio/balance', {
-      params: { user_id }
-    });
-
-    const portfolio = portfolioResponse.data;
-    const balance = balanceResponse.data;
-
-    debug(`Fetched portfolio and balance for user ${req.session.user}`);
-    res.render('trade', { user: req.session.user, user_id: user_id, portfolio, balance });
-  } catch (error) {
-    debug(`Error fetching portfolio for user ${req.session.user}: ${error.message}`);
-    res.status(500).send("Internal Server Error");
-  }
-});
-
-app.get('/stocks', requireLogin, async (req, res) => {
+// Render the stocks page with available stocks
+app.get('/stocks', requireLogin, attachToken, async (req, res) => {
   try {
     const response = await axios.get('http://localhost:5000/stocks');
     const stocks = response.data;
@@ -171,19 +200,14 @@ app.get('/stocks', requireLogin, async (req, res) => {
   }
 });
 
-// Error handler
+// General error handler middleware
 app.use((err, req, res, next) => {
   debug(`Internal Server Error: ${err.message}`);
   console.error(err.stack); // Log the stack trace to the console
   res.status(500).send('Internal Server Error');
 });
 
-// Error handler
-app.use((err, req, res, next) => {
-  debug(`Internal Server Error: ${err.message}`);
-  res.status(500).send('Internal Server Error');
-});
-
+// Start the server
 app.listen(port, () => {
   debug(`Server is running on http://localhost:${port}`);
   console.log(`Server is running on http://localhost:${port}`);

@@ -1,5 +1,6 @@
 from app import mongo
 from bson import ObjectId
+from werkzeug.security import generate_password_hash, check_password_hash
 
 class UserService:
     @staticmethod
@@ -13,7 +14,7 @@ class UserService:
         """
         user = {
             "username": data['username'],
-            "password": data['password'],  # In a real application, hash the password
+            "password": generate_password_hash(data['password']),  # Hash the password
             "balance": 10000,
             "portfolio": []
         }
@@ -39,10 +40,27 @@ class UserService:
         Expects data to contain 'username' and 'password'.
         Returns the user ID if credentials are correct, otherwise returns None.
         """
-        user = mongo.db.users.find_one({"username": data['username'], "password": data['password']})
+        print(f"Received data: {data}")  # Debug: Log received data
+        user = mongo.db.users.find_one({"username": data['username']})
         if user:
-            return user['_id']
+            print(f"User found: {user}")  # Debug: Log user data from DB
+            if check_password_hash(user['password'], data['password']):
+                print(f"Password match for user: {user['_id']}")  # Debug: Log successful password match
+                return user['_id']
+            else:
+                print(f"Password mismatch for user: {user['_id']}")  # Debug: Log password mismatch
+        else:
+            print("User not found")  # Debug: Log user not found
         return None
+
+    @staticmethod
+    def get_user_by_id(user_id):
+        """
+        Fetch a user by user ID.
+        Expects the 'user_id' as input.
+        Returns the user document if found, otherwise returns None.
+        """
+        return mongo.db.users.find_one({"_id": ObjectId(user_id)})
 
     @staticmethod
     def get_portfolio(user_id):

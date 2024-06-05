@@ -3,21 +3,40 @@ extends layout
 block content
   script.
     $(document).ready(function() {
-      const userId = $('#userId').val();
+      const token = "#{token}";  // Retrieve the token passed from the server
+
+      if (!token) {
+        alert('User is not authenticated');
+        window.location.href = '/signin';  // Redirect to sign-in page if not authenticated
+        return;
+      }
+
+      $('#stockSymbol').keypress(function(e) {
+        if (e.which == 13) {  // Enter key pressed
+          e.preventDefault();
+          $('#getPriceButton').click();  // Trigger get price function
+        }
+      });
 
       $('#getPriceButton').click(function() {
         const symbol = $('#stockSymbol').val();
         if (symbol) {
-          $.get(`http://localhost:5000/stocks/${symbol}`, function(data) {
-            if (data.price) {
-              const roundedPrice = parseFloat(data.price).toFixed(2);
-              $('#stockPrice').val(roundedPrice);
-              calculateTotalPrice();
-            } else {
-              alert('Stock not found');
+          $.ajax({
+            url: `http://localhost:5000/stocks/${symbol}`,
+            type: 'GET',
+            headers: { 'Authorization': `Bearer ${token}` },
+            success: function(data) {
+              if (data.price) {
+                const roundedPrice = parseFloat(data.price).toFixed(2);
+                $('#stockPrice').val(roundedPrice);
+                calculateTotalPrice();
+              } else {
+                alert('Stock not found');
+              }
+            },
+            error: function() {
+              alert('Error fetching stock price');
             }
-          }).fail(function() {
-            alert('Error fetching stock price');
           });
         } else {
           alert('Please enter a stock symbol');
@@ -60,7 +79,6 @@ block content
 
         const url = `http://localhost:5000/transactions/${type}`;
         const data = {
-          user_id: userId,
           stock_symbol: stockSymbol,
           quantity: quantity
         };
@@ -69,9 +87,11 @@ block content
           url: url,
           type: 'POST',
           contentType: 'application/json',
+          headers: { 'Authorization': `Bearer ${token}` },
           data: JSON.stringify(data),
           success: function(response) {
             alert(response.message || 'Transaction successful');
+            location.reload();  // Refresh the page on successful transaction
           },
           error: function(response) {
             alert(response.responseJSON.error || 'Transaction failed');
@@ -79,41 +99,45 @@ block content
         });
       }
     });
+  .container
+    h1 Trade
+    h3 Welcome, #{user}
+    if balance
+      h3 Balance: $#{balance.toFixed(2)}
 
-  if balance
-    p Balance: $#{balance.toFixed(2)}
-
-  if portfolio.length
-    .portfolio-container 
-      table.portfolio-table
-        thead
-          tr
-            th Stock Symbol
-            th Quantity
-            th Price
-        tbody
-          each item in portfolio
+    if portfolio.length
+      .portfolio-container 
+        table.portfolio-table
+          thead
             tr
-              td= item.stock_symbol
-              td= item.quantity
-              td= item.price.toFixed(2)
-  else
-    p You have no stocks in your portfolio.
+              th Stock Symbol
+              th Quantity
+              th Price
+          tbody
+            each item in portfolio
+              tr
+                td= item.stock_symbol
+                td= item.quantity
+                td= item.price.toFixed(2)
+    else
+      p You have no stocks in your portfolio.
 
-  form
-    div
-      label(for="stockSymbol") Stock Symbol:
-      input(type="text" id="stockSymbol" name="stockSymbol" required)
-      button(type="button" id="getPriceButton") Get Price
-    div
-      label(for="stockPrice") Stock Price:
-      input(type="text" id="stockPrice" name="stockPrice" readonly)
-    div
-      label(for="numberOfShares") Number of Shares:
-      input(type="number" id="numberOfShares" name="numberOfShares" min="1")
-    div
-      label(for="totalPrice") Total Price:
-      input(type="text" id="totalPrice" name="totalPrice" readonly)
-    div
-      button(type="button" id="buyButton") Buy
-      button(type="button" id="sellButton") Sell
+    
+    .transactions
+      form
+        .transaction-group
+          label(for="stockSymbol" class="transaction-label") Stock Symbol:
+          input(type="text" id="stockSymbol" name="stockSymbol" class="transaction-input" required)
+          button(type="button" id="getPriceButton" class="transaction-button") Get Price
+        .transaction-group
+          label(for="stockPrice" class="transaction-label") Stock Price:
+          input(type="text" id="stockPrice" name="stockPrice" class="transaction-input" readonly)
+        .transaction-group
+          label(for="numberOfShares" class="transaction-label") Number of Shares:
+          input(type="number" id="numberOfShares" name="numberOfShares" class="transaction-input" min="1")
+        .transaction-group
+          label(for="totalPrice" class="transaction-label") Total Price:
+          input(type="text" id="totalPrice" name="totalPrice" class="transaction-input" readonly)
+        .transaction-group
+          button(type="button" id="buyButton" class="transaction-button") Buy
+          button(type="button" id="sellButton" class="transaction-button") Sell

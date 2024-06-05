@@ -14,7 +14,7 @@ class TransactionService:
         Returns a success message if the purchase is successful, or an error message otherwise.
         """
         user_id = data['user_id']
-        stock_symbol = data['stock_symbol']
+        stock_symbol = data['stock_symbol'].upper()
         quantity = data['quantity']
 
         # Convert user_id to ObjectId
@@ -32,10 +32,22 @@ class TransactionService:
             total_price = price * quantity
             if user['balance'] >= total_price:
                 new_balance = user['balance'] - total_price
+
+                # Check if the stock is already in the portfolio
+                portfolio = user.get('portfolio', [])
+                stock_exists = False
+                for stock in portfolio:
+                    if stock['stock_symbol'] == stock_symbol:
+                        stock['quantity'] += quantity
+                        stock_exists = True
+                        break
+
+                if not stock_exists:
+                    portfolio.append({"stock_symbol": stock_symbol, "quantity": quantity, "price": price})
+
                 mongo.db.users.update_one(
                     {"_id": user_id},
-                    {"$set": {"balance": new_balance},
-                     "$push": {"portfolio": {"stock_symbol": stock_symbol, "quantity": quantity, "price": price}}}
+                    {"$set": {"balance": new_balance, "portfolio": portfolio}}
                 )
 
                 # Log the transaction
@@ -54,7 +66,7 @@ class TransactionService:
             else:
                 return {"message": "Insufficient balance"}
         return {"message": "User not found"}
-
+    
     @staticmethod
     def sell_stock(data):
         """
@@ -65,7 +77,7 @@ class TransactionService:
         Returns a success message if the sale is successful, or an error message otherwise.
         """
         user_id = data['user_id']
-        stock_symbol = data['stock_symbol']
+        stock_symbol = data['stock_symbol'].upper()
         quantity = data['quantity']
 
         # Convert user_id to ObjectId
