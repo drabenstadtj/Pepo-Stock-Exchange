@@ -1,6 +1,7 @@
 from app import mongo
 from bson import ObjectId
 from werkzeug.security import generate_password_hash, check_password_hash
+from .stock_service import StockService
 
 class UserService:
     @staticmethod
@@ -72,9 +73,12 @@ class UserService:
         """
         user = mongo.db.users.find_one({"_id": ObjectId(user_id)}, {"portfolio": 1})
         if user and 'portfolio' in user:
-            return user['portfolio']
+            portfolio = user['portfolio']
+            for stock in portfolio:
+                stock['price'] = StockService.get_stock_price(stock['stock_symbol'])
+            return portfolio
         return []
-
+    
     @staticmethod
     def get_balance(user_id):
         """

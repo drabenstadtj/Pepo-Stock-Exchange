@@ -5,6 +5,7 @@ const axios = require('axios');
 const path = require('path');
 const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 
 // Load environment variables from .env file located in the parent directory
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
@@ -36,13 +37,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Configure session middleware
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'your-session-secret-key', // Use SESSION_SECRET from .env file or fallback
+  secret: sessionSecret, // Use SESSION_SECRET from .env file or fallback
   resave: false,
   saveUninitialized: true,
   cookie: {
     sameSite: 'lax', // Ensures the cookie is sent in all contexts
     secure: process.env.NODE_ENV === 'production', // Set to true in production environment
-    maxAge: 60000 // Cookie expiration time
+    maxAge: 24 * 60 * 60 * 1000  // Cookie expiration time
   }
 }));
 
@@ -50,7 +51,6 @@ const requireLogin = (req, res, next) => {
   debug(`Checking if user is logged in: ${req.session.user}`);
   if (req.session && req.session.token) {
     try {
-      const secretKey = process.env.SECRET_KEY;
       if (!secretKey) {
         throw new Error("SECRET_KEY not set in environment");
       }
@@ -66,7 +66,6 @@ const requireLogin = (req, res, next) => {
     res.redirect('/signin'); // Redirect to sign-in page if not logged in
   }
 };
-
 
 // Middleware to attach token to headers
 const attachToken = (req, res, next) => {
@@ -154,6 +153,11 @@ app.get('/logout', (req, res) => {
 app.get('/', requireLogin, attachToken, (req, res) => {
   debug(`Rendering home page for user ${req.session.user}`);
   res.render('index', { user: req.session.user });
+});
+
+// Route to serve the leaderboard view
+app.get('/leaderboard', requireLogin, attachToken, (req, res) => {
+  res.render('leaderboard', { title: 'Leaderboard', user: req.session.user  });
 });
 
 // Render the about page

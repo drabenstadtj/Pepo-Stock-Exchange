@@ -1,109 +1,15 @@
 extends layout
 
 block content
-  script.
-    $(document).ready(function() {
-      const token = "#{token}";  // Retrieve the token passed from the server
+  meta(name="csrf-token" content=token)
+  meta(name="balance" content=balance)
+  script(src="/javascripts/trade.js")
 
-      if (!token) {
-        alert('User is not authenticated');
-        window.location.href = '/signin';  // Redirect to sign-in page if not authenticated
-        return;
-      }
-
-      $('#stockSymbol').keypress(function(e) {
-        if (e.which == 13) {  // Enter key pressed
-          e.preventDefault();
-          $('#getPriceButton').click();  // Trigger get price function
-        }
-      });
-
-      $('#getPriceButton').click(function() {
-        const symbol = $('#stockSymbol').val();
-        if (symbol) {
-          $.ajax({
-            url: `http://localhost:5000/stocks/${symbol}`,
-            type: 'GET',
-            headers: { 'Authorization': `Bearer ${token}` },
-            success: function(data) {
-              if (data.price) {
-                const roundedPrice = parseFloat(data.price).toFixed(2);
-                $('#stockPrice').val(roundedPrice);
-                calculateTotalPrice();
-              } else {
-                alert('Stock not found');
-              }
-            },
-            error: function() {
-              alert('Error fetching stock price');
-            }
-          });
-        } else {
-          alert('Please enter a stock symbol');
-        }
-      });
-
-      $('#numberOfShares').on('input', function() {
-        calculateTotalPrice();
-      });
-
-      function calculateTotalPrice() {
-        const price = parseFloat($('#stockPrice').val());
-        const shares = parseInt($('#numberOfShares').val());
-        if (!isNaN(price) && !isNaN(shares)) {
-          const totalPrice = (price * shares).toFixed(2);
-          $('#totalPrice').val(totalPrice);
-        } else {
-          $('#totalPrice').val('');
-        }
-      }
-
-      $('#buyButton').click(function(e) {
-        e.preventDefault();
-        submitTransaction('buy');
-      });
-
-      $('#sellButton').click(function(e) {
-        e.preventDefault();
-        submitTransaction('sell');
-      });
-
-      function submitTransaction(type) {
-        const stockSymbol = $('#stockSymbol').val();
-        const quantity = parseInt($('#numberOfShares').val());
-
-        if (!stockSymbol || isNaN(quantity)) {
-          alert('Please fill in all fields');
-          return;
-        }
-
-        const url = `http://localhost:5000/transactions/${type}`;
-        const data = {
-          stock_symbol: stockSymbol,
-          quantity: quantity
-        };
-
-        $.ajax({
-          url: url,
-          type: 'POST',
-          contentType: 'application/json',
-          headers: { 'Authorization': `Bearer ${token}` },
-          data: JSON.stringify(data),
-          success: function(response) {
-            alert(response.message || 'Transaction successful');
-            location.reload();  // Refresh the page on successful transaction
-          },
-          error: function(response) {
-            alert(response.responseJSON.error || 'Transaction failed');
-          }
-        });
-      }
-    });
   .container
     h1 Trade
     h3 Welcome, #{user}
     if balance
-      h3 Balance: $#{balance.toFixed(2)}
+      h3 Balance: $<span id="balance"></span>
 
     if portfolio.length
       .portfolio-container 
@@ -122,13 +28,12 @@ block content
     else
       p You have no stocks in your portfolio.
 
-    
     .transactions
       form
         .transaction-group
           label(for="stockSymbol" class="transaction-label") Stock Symbol:
           input(type="text" id="stockSymbol" name="stockSymbol" class="transaction-input" required)
-          button(type="button" id="getPriceButton" class="transaction-button") Get Price
+          button(type="button" id="getPriceButton" style="height: 29px;") Get Price
         .transaction-group
           label(for="stockPrice" class="transaction-label") Stock Price:
           input(type="text" id="stockPrice" name="stockPrice" class="transaction-input" readonly)

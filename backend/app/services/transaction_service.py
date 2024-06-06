@@ -43,7 +43,7 @@ class TransactionService:
                         break
 
                 if not stock_exists:
-                    portfolio.append({"stock_symbol": stock_symbol, "quantity": quantity, "price": price})
+                    portfolio.append({"stock_symbol": stock_symbol, "quantity": quantity})
 
                 mongo.db.users.update_one(
                     {"_id": user_id},
@@ -66,7 +66,7 @@ class TransactionService:
             else:
                 return {"message": "Insufficient balance"}
         return {"message": "User not found"}
-    
+
     @staticmethod
     def sell_stock(data):
         """
@@ -147,5 +147,4 @@ class TransactionService:
             return transaction_list
         except Exception as e:
             print("Error in get_transactions:", str(e))
-            traceback.print_exc()
             return {"message": "Internal Server Error"}

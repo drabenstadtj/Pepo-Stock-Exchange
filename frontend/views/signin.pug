@@ -5,11 +5,15 @@ html(lang="en")
     link(rel="stylesheet", href="/stylesheets/style.css")
     script(src="https://code.jquery.com/jquery-3.6.0.min.js")
   body
+
     .header-container
       include _header 
       include _clock
 
+    hr
+
     .signin-container
+
       h1 Sign In
 
       form(action='/signin', method='post', onsubmit='return trimInput()')
@@ -26,6 +30,7 @@ html(lang="en")
         button(type='submit') Sign In
 
       h1 Sign Up 
+      
       form(action='/signup', method='get')
         button(type='submit') Sign Up
 
