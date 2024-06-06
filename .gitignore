@@ -5,6 +5,7 @@ __pycache__/
 *.pyd
 env/
 venv/
+backend/test.py
 
 # Node.js
 node_modules/

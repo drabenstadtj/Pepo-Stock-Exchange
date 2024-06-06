@@ -5,7 +5,6 @@ const axios = require('axios');
 const path = require('path');
 const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
-const mongoose = require('mongoose');
 
 // Load environment variables from .env file located in the parent directory
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
