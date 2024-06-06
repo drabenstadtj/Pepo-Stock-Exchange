@@ -17,25 +17,65 @@ The frontend of the simulated stock market application is built with Express.js 
 ## Directory Structure
 
 ```
-.
-├── frontend
-│ ├── views
-│ │ ├── signup.pug
-│ │ ├── signin.pug
-│ │ ├── dashboard.pug
-│ │ ├── about.pug
-│ │ ├── trade.pug
-│ │ ├── stocks.pug
-│ │ ├── index.pug
-│ │ ├── layout.pug
-│ │ ├── _header.pug
-│ │ ├── _navigation.pug
-│ │ └── _clock.pug
-│ ├── public
-│ │ └── stylesheets
-│ │     └── style.css
-│ └── app.js
-└── README.md
+Pepo-Stock-Exchange/
+┣ backend/
+┃ ┣ app/
+┃ ┃ ┣ routes/
+┃ ┃ ┃ ┣ auth.py
+┃ ┃ ┃ ┣ leaderboard.py
+┃ ┃ ┃ ┣ portfolio.py
+┃ ┃ ┃ ┣ stocks.py
+┃ ┃ ┃ ┣ transactions.py
+┃ ┃ ┃ ┗ __init__.py
+┃ ┃ ┣ services/
+┃ ┃ ┃ ┣ leaderboard_service.py
+┃ ┃ ┃ ┣ stock_service.py
+┃ ┃ ┃ ┣ transaction_service.py
+┃ ┃ ┃ ┣ trends_service.py
+┃ ┃ ┃ ┗ user_service.py
+┃ ┃ ┣ config.py
+┃ ┃ ┗ __init__.py
+┃ ┣ data/
+┃ ┃ ┣ initial_data.json
+┃ ┃ ┗ StockNames.xlsx
+┃ ┣ initialize_stocks.py
+┃ ┣ requirements.txt
+┃ ┣ run.py
+┃ ┣ test.py
+┃ ┗ update_stock_prices.py
+┣ frontend/
+┃ ┣ config/
+┃ ┃ ┗ config.js
+┃ ┣ public/
+┃ ┃ ┣ images/
+┃ ┃ ┃ ┗ JSc2YO1.gif
+┃ ┃ ┣ javascripts/
+┃ ┃ ┃ ┣ leaderboard.js
+┃ ┃ ┃ ┗ trade.js
+┃ ┃ ┗ stylesheets/
+┃ ┃   ┣ style.css
+┃ ┃   ┗ style.css.map
+┃ ┣ src/
+┃ ┃ ┗ scss/
+┃ ┃   ┣ styles.scss
+┃ ┃   ┗ _variables.scss
+┃ ┣ views/
+┃ ┃ ┣ about.pug
+┃ ┃ ┣ index.pug
+┃ ┃ ┣ layout.pug
+┃ ┃ ┣ leaderboard.pug
+┃ ┃ ┣ signin.pug
+┃ ┃ ┣ signup.pug
+┃ ┃ ┣ stocks.pug
+┃ ┃ ┣ trade.pug
+┃ ┃ ┣ _clock.pug
+┃ ┃ ┣ _header.pug
+┃ ┃ ┗ _navigation.pug
+┃ ┣ app.js
+┃ ┣ package-lock.json
+┃ ┗ package.json
+┣ .gitignore
+┗ README.md
 ```
 
 ## Features
@@ -71,9 +111,9 @@ The frontend of the simulated stock market application is built with Express.js 
 ### Layout and Partials
 
 - **layout.pug**: Base layout template for consistent header and footer.
-- **_header.pug**: Partial template for the header.
-- **_navigation.pug**: Partial template for navigation.
-- **_clock.pug**: Partial template for displaying the current time.
+- **\_header.pug**: Partial template for the header.
+- **\_navigation.pug**: Partial template for navigation.
+- **\_clock.pug**: Partial template for displaying the current time.
 
 ## Backend
 
