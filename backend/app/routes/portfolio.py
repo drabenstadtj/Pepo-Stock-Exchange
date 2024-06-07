@@ -11,6 +11,9 @@ bp = Blueprint('portfolio', __name__, url_prefix='/portfolio')
 SECRET_KEY = os.getenv('SECRET_KEY', 'default-secret-key')
 
 def token_required(f):
+    """
+    Decorator to ensure a valid JWT token is present in the request header.
+    """
     @wraps(f)
     def decorated(*args, **kwargs):
         token = request.headers.get('Authorization')
@@ -18,6 +21,7 @@ def token_required(f):
             return jsonify({'message': 'Token is missing!'}), 403
 
         try:
+            # Extract token from 'Bearer <token>' format
             token = token.split()[1]
             data = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
             user_id = data['user_id']
@@ -38,19 +42,27 @@ def token_required(f):
 def get_portfolio(user_id):
     """
     Fetch the user's portfolio.
+    
     Expects a valid JWT token.
     Returns the user's portfolio if the user is found.
     """
-    portfolio = UserService.get_portfolio(user_id)
-    return jsonify(portfolio)
+    try:
+        portfolio = UserService.get_portfolio(user_id)
+        return jsonify(portfolio), 200, {'Content-Type': 'application/json'}
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500, {'Content-Type': 'application/json'}
 
 @bp.route('/balance', methods=['GET'])
 @token_required
 def get_balance(user_id):
     """
     Fetch the user's balance.
+    
     Expects a valid JWT token.
     Returns the user's balance if the user is found.
     """
-    balance = UserService.get_balance(user_id)
-    return jsonify(balance)
+    try:
+        balance = UserService.get_balance(user_id)
+        return jsonify(balance), 200, {'Content-Type': 'application/json'}
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500, {'Content-Type': 'application/json'}

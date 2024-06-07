@@ -1,5 +1,5 @@
 body {
-  background-color: #aa7f62;
+  background-color: rgb(167, 143, 134);
 }
 
 input,
@@ -7,7 +7,7 @@ button {
   background-color: #eeeeee;
   border-radius: 4px;
   box-sizing: border-box;
-  border-color: #6c4e3a;
+  border-color: #735c54;
 }
 
 button:hover {
@@ -87,7 +87,7 @@ main {
   margin-bottom: 20px;
 }
 .stocks-table thead tr {
-  background-color: #6c4e3a;
+  background-color: #735c54;
   color: black;
   text-align: center;
   font-weight: bold;
@@ -96,14 +96,14 @@ main {
 .stocks-table td {
   padding: 12px 15px;
   text-align: center;
-  border-bottom: 1px solid #6c4e3a;
+  border-bottom: 1px solid #735c54;
   position: relative;
 }
 .stocks-table tbody tr:nth-of-type(even) {
-  background-color: #bc9a83;
+  background-color: #bcaaa4;
 }
 .stocks-table tbody tr:hover {
-  background-color: #ceb5a4; /* Change this to your desired hover color */
+  background-color: #d2c6c1; /* Change this to your desired hover color */
 }
 .stocks-table .positive-change {
   color: green;
@@ -118,7 +118,7 @@ main {
 .stock-popup .popuptext {
   visibility: hidden;
   width: 200px;
-  background-color: #ceb5a4;
+  background-color: #d2c6c1;
   color: #000;
   text-align: left;
   border: 1px solid black;
@@ -151,7 +151,7 @@ main {
   margin-bottom: 20px;
 }
 .portfolio-table thead tr {
-  background-color: #6c4e3a;
+  background-color: #735c54;
   color: black;
   text-align: left;
   font-weight: bold;
@@ -161,13 +161,13 @@ main {
   padding: 12px 15px;
 }
 .portfolio-table tbody tr {
-  border-bottom: 1px solid #6c4e3a;
+  border-bottom: 1px solid #735c54;
 }
 .portfolio-table tbody tr:nth-of-type(even) {
-  background-color: #bc9a83;
+  background-color: #bcaaa4;
 }
 .portfolio-table tbody tr:last-of-type {
-  border-bottom: 2px solid #6c4e3a;
+  border-bottom: 2px solid #735c54;
 }
 .portfolio-table tbody tr.active-row {
   font-weight: bold;
@@ -184,7 +184,7 @@ main {
   margin-bottom: 20px;
 }
 .leaderboard-table thead tr {
-  background-color: #6c4e3a;
+  background-color: #735c54;
   color: black;
   text-align: left;
   font-weight: bold;
@@ -194,13 +194,13 @@ main {
   padding: 12px 15px;
 }
 .leaderboard-table tbody tr {
-  border-bottom: 1px solid #6c4e3a;
+  border-bottom: 1px solid #735c54;
 }
 .leaderboard-table tbody tr:nth-of-type(even) {
-  background-color: #bc9a83;
+  background-color: #bcaaa4;
 }
 .leaderboard-table tbody tr:last-of-type {
-  border-bottom: 2px solid #6c4e3a;
+  border-bottom: 2px solid #735c54;
 }
 .leaderboard-table tbody tr.active-row {
   font-weight: bold;
@@ -258,7 +258,14 @@ main {
 }
 
 .transactions {
-  max-width: 400px;
+  max-width: 420px;
+  margin-left: auto;
+  background-color: #735c54;
+  border-radius: 5px;
+}
+
+.transactions form {
+  margin: 10px;
 }
 
 .positive-change {
@@ -267,6 +274,16 @@ main {
 
 .negative-change {
   color: red;
+}
+
+.welcome-transactions-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.welcome-container h3 {
+  margin-top: 0px;
 }
 
 /*# sourceMappingURL=style.css.map */

@@ -9,11 +9,16 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
+# Secret key for JWT encoding/decoding
 SECRET_KEY = os.getenv('SECRET_KEY', 'default-secret-key')
 
+# Create a Blueprint for authentication-related routes
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 def token_required(f):
+    """
+    Decorator to ensure a valid JWT token is present in the request header.
+    """
     @wraps(f)
     def decorated(*args, **kwargs):
         token = request.headers.get('Authorization')
@@ -21,6 +26,7 @@ def token_required(f):
             return jsonify({'message': 'Token is missing!'}), 403
 
         try:
+            # Extract token from 'Bearer <token>' format
             token = token.split()[1]
             data = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
             user_id = data['user_id']
@@ -38,6 +44,12 @@ def token_required(f):
 
 @bp.route('/verify_credentials', methods=['POST'])
 def verify_credentials():
+    """
+    Verify user credentials and generate a JWT token if valid.
+    
+    Expects JSON payload with 'username' and 'password'.
+    Returns a JWT token if credentials are valid.
+    """
     data = request.get_json()
     print(f"Received request data: {data}")  # Debug: Log received request data
     user_id = UserService.verify_credentials(data)
@@ -55,6 +67,7 @@ def verify_credentials():
 def register():
     """
     Register a new user.
+    
     Expects JSON payload with 'username' and 'password'.
     Returns a success message upon successful registration.
     """
@@ -67,6 +80,7 @@ def register():
 def get_user_id(current_user):
     """
     Fetch the user ID by username.
+    
     Expects a query parameter 'username'.
     Returns the user ID if found, or an error message if not found.
     """
@@ -76,5 +90,3 @@ def get_user_id(current_user):
         return jsonify({"_id": str(user_id)}), 200
     else:
         return jsonify({"error": "User not found"}), 404
-
-

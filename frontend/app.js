@@ -36,7 +36,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Configure session middleware
 app.use(session({
-  secret: sessionSecret, // Use SESSION_SECRET from .env file or fallback
+  secret: sessionSecret, // Use SESSION_SECRET from .env file
   resave: false,
   saveUninitialized: true,
   cookie: {
@@ -46,13 +46,11 @@ app.use(session({
   }
 }));
 
+// Middleware to require login
 const requireLogin = (req, res, next) => {
   debug(`Checking if user is logged in: ${req.session.user}`);
   if (req.session && req.session.token) {
     try {
-      if (!secretKey) {
-        throw new Error("SECRET_KEY not set in environment");
-      }
       const decoded = jwt.verify(req.session.token, secretKey);
       req.user = decoded;
       next(); // User is logged in, proceed to the next middleware
@@ -107,6 +105,7 @@ app.get('/signin', (req, res) => {
   res.render('signin', { error, user: req.session.user });
 });
 
+// Handle sign-in form submission
 app.post('/signin', async (req, res) => {
   const { username, password } = req.body;
   try {
