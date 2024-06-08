@@ -3,9 +3,12 @@ from app.services.user_service import UserService
 import jwt
 from functools import wraps
 import os
+from flask_cors import CORS
+
 
 # Create a Blueprint for portfolio-related routes
 bp = Blueprint('portfolio', __name__, url_prefix='/portfolio')
+CORS(bp, supports_credentials=True)  # Apply CORS to the blueprint
 
 # Load environment variables
 SECRET_KEY = os.getenv('SECRET_KEY', 'default-secret-key')

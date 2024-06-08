@@ -4,9 +4,11 @@ import jwt
 import datetime
 from functools import wraps
 import logging
+from flask_cors import CORS
 
 # Create a Blueprint for authentication-related routes
 bp = Blueprint('auth', __name__, url_prefix='/auth')
+CORS(bp, supports_credentials=True)  # Apply CORS to the blueprint
 
 def token_required(f):
     @wraps(f)
