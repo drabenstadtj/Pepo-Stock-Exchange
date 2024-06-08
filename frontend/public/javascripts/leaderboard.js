@@ -7,10 +7,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const response = await fetch('http://localhost:5000/leaderboard', {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json',
-        },
-        mode: 'cors',  // Ensure CORS mode is set
-      });
+            'Content-Type': 'application/json'
+        }
+    })
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
