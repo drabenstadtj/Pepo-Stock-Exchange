@@ -13,10 +13,12 @@ const app = express();
 const port = process.env.FRONTEND_PORT || 3000;
 const backendHost = process.env.BACKEND_HOST || 'localhost';
 const backendPort = process.env.BACKEND_PORT || 5000;
+const isProduction = process.env.NODE_CONFIG === 'prod';
 
 // Verify that SECRET_KEY and SESSION_SECRET are set
 const secretKey = process.env.SECRET_KEY;
 const sessionSecret = process.env.SESSION_SECRET;
+const signupPasscode = process.env.SIGNUP_PASSCODE;
 
 if (!secretKey) {
   console.error('Error: SECRET_KEY is not set in the environment variables.');
@@ -84,12 +86,23 @@ const getBackendUrl = (endpoint) => {
 
 // Render the sign-up page
 app.get('/signup', (req, res) => {
-  res.render('signup', { user: req.session.user });
+  res.render('signup', { user: req.session.user, isProduction });
+});
+
+// Render the sign-up page
+app.get('/signup', (req, res) => {
+  res.render('signup', { user: req.session.user, isProduction });
 });
 
 // Handle sign-up form submission
 app.post('/signup', async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password, passcode } = req.body;
+
+  if (isProduction && passcode !== signupPasscode) {
+    debug('Signup failed: Incorrect passcode');
+    return res.render('signup', { error: 'Incorrect passcode', isProduction });
+  }
+
   try {
     const response = await axios.post(getBackendUrl('/auth/register'), { username, password });
     if (response.data.message === 'User registered successfully') {
