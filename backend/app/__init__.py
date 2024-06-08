@@ -14,7 +14,7 @@ def create_app(config_name='prod'):
     mongo.init_app(app)
 
     # Enable CORS for the app
-    CORS(app, origins=app.config['CORS_ORIGINS'])
+    CORS(app)
 
     # Register blueprints
     from .routes import register_routes
