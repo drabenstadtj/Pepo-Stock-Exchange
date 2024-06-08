@@ -1,10 +1,12 @@
 from flask import Blueprint, jsonify
 from app.services.leaderboard_service import LeaderboardService
+from flask_cors import cross_origin
 
 # Create a Blueprint for leaderboard-related routes
 bp = Blueprint('leaderboard', __name__, url_prefix='/leaderboard')
 
 @bp.route('', methods=['GET'])
+@cross_origin()  # Apply CORS to this route
 def get_leaderboard():
     """
     Fetch the current leaderboard.
