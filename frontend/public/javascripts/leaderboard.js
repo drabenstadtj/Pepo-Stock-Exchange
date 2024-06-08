@@ -9,7 +9,10 @@ document.addEventListener("DOMContentLoaded", () => {
         headers: {
             'Content-Type': 'application/json'
         }
-    })
+      })
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error('Error:', error));
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
