@@ -11,11 +11,12 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         mode: 'cors',  // Ensure CORS mode is set
       });
-      
-      const textResponse = await response.text();
 
-      // Parse the JSON response
-      const users = JSON.parse(textResponse);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const users = await response.json();
 
       // Update the leaderboard table with the fetched data
       updateLeaderboard(users);
@@ -65,12 +66,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  /**
-   * Formats a number as currency.
-   *
-   * @param {number} value - The number to format.
-   * @returns {string} The formatted currency string.
-   */
   function formatMoney(value) {
     return `$${value.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
   }
