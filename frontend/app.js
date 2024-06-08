@@ -5,7 +5,6 @@ const axios = require('axios');
 const path = require('path');
 const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
-const cors = require('cors');
 
 // Load environment variables from .env file located in the parent directory
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
@@ -51,16 +50,6 @@ app.use(session({
     maxAge: 24 * 60 * 60 * 1000  // Cookie expiration time
   }
 }));
-
-const corsOptions = {
-  origin: `http://${backendHost}:${backendPort}`,
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-};
-
-// CORS configuration
-app.use(cors(corsOptions));
 
 // Middleware to require login
 const requireLogin = (req, res, next) => {

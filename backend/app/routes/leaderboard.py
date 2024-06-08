@@ -1,10 +1,8 @@
 from flask import Blueprint, jsonify
 from app.services.leaderboard_service import LeaderboardService
-from flask_cors import CORS
 
 # Create a Blueprint for leaderboard-related routes
 bp = Blueprint('leaderboard', __name__, url_prefix='/leaderboard')
-CORS(bp, supports_credentials=True)  # Apply CORS to the blueprint
 
 @bp.route('', methods=['GET'])
 def get_leaderboard():

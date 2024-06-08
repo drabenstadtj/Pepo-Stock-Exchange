@@ -1,5 +1,4 @@
 from flask import Blueprint, request, jsonify
-from flask_cors import CORS
 from app.services.transaction_service import TransactionService
 import jwt
 from functools import wraps
@@ -7,7 +6,6 @@ import os
 
 # Create a Blueprint for transaction-related routes
 bp = Blueprint('transactions', __name__, url_prefix='/transactions')
-CORS(bp, supports_credentials=True)  # Apply CORS to the blueprint
 
 # Load environment variables
 SECRET_KEY = os.getenv('SECRET_KEY', 'default-secret-key')
