@@ -1,11 +1,12 @@
 from flask import Blueprint, jsonify
 from app.services.leaderboard_service import LeaderboardService
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 
 # Create a Blueprint for leaderboard-related routes
 bp = Blueprint('leaderboard', __name__, url_prefix='/leaderboard')
 CORS(bp, supports_credentials=True)  # Apply CORS to the blueprint
 
+@cross_origin()
 @bp.route('', methods=['GET'])
 def get_leaderboard():
     """
@@ -20,4 +21,4 @@ def get_leaderboard():
         return jsonify(leaderboard), 200, {'Content-Type': 'application/json'}
     except Exception as e:
         # Return an error message and a 500 status code if an exception occurs
-        return jsonify({'error': str(e)}), 500, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'}
+        return jsonify({'error': str(e)}), 500, {'Content-Type': 'application/json'}
