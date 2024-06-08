@@ -1,17 +1,9 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 from app.services.user_service import UserService
 import jwt
 import datetime
 from functools import wraps
-import os
-from dotenv import load_dotenv
 import logging
-
-# Load environment variables from .env file
-load_dotenv()
-
-# Secret key for JWT encoding/decoding
-SECRET_KEY = os.getenv('SECRET_KEY', 'default-secret-key')
 
 # Create a Blueprint for authentication-related routes
 bp = Blueprint('auth', __name__, url_prefix='/auth')
@@ -25,7 +17,7 @@ def token_required(f):
 
         try:
             token = token.split()[1]
-            data = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+            data = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=["HS256"])
             user_id = data['user_id']
         except jwt.ExpiredSignatureError:
             return jsonify({'message': 'Token has expired!'}), 403
@@ -47,8 +39,8 @@ def verify_credentials():
     if user_id:
         token = jwt.encode({
             'user_id': str(user_id),
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1)
-        }, SECRET_KEY, algorithm="HS256")
+            'exp': datetime.datetime.now() + datetime.timedelta(hours=24)
+        }, current_app.config['SECRET_KEY'], algorithm="HS256")
         logging.info(f"Generated token: {token}")
         return jsonify({"message": "Credentials verified", "token": token}), 200
     else:

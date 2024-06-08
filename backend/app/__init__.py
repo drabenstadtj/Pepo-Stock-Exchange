@@ -21,6 +21,9 @@ def create_app(config_name='prod'):
     register_routes(app)
 
     # Configure logging
-    logging.basicConfig(level=logging.INFO)
+    if config_name == 'prod':
+        logging.basicConfig(level=logging.INFO)
+    else:
+        logging.basicConfig(level=logging.DEBUG)
 
     return app

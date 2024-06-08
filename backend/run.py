@@ -1,11 +1,8 @@
+import os
 from app import create_app
-import logging
 
-# Create the Flask application instance
-app = create_app()
+config_name = os.getenv('FLASK_CONFIG', 'dev')  # Default to 'dev' if not set
+app = create_app(config_name=config_name)
 
 if __name__ == "__main__":
-    # Configure logging
-    logging.basicConfig(level=logging.INFO)
-    # Run the Flask application
-    app.run(debug=False, host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000)

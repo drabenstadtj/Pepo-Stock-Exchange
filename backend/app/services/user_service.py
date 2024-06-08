@@ -8,16 +8,10 @@ class UserService:
     def register_user(data):
         """
         Register a new user.
-        
         Expects data to contain 'username' and 'password'.
         Initializes user balance to 10000 and an empty portfolio.
         Stores user information in the users collection.
-        
-        Args:
-            data (dict): Dictionary containing 'username' and 'password'.
-        
-        Returns:
-            dict: A success message upon successful registration.
+        Returns a success message upon successful registration.
         """
         user = {
             "username": data['username'],
@@ -32,12 +26,8 @@ class UserService:
     def get_user_id(username):
         """
         Fetch the user ID by username.
-        
-        Args:
-            username (str): The username to search for.
-        
-        Returns:
-            ObjectId: The user ID if found, otherwise None.
+        Expects the 'username' as input.
+        Returns the user ID if found, otherwise returns None.
         """
         user = mongo.db.users.find_one({"username": username}, {"_id": 1})
         if user:
@@ -48,14 +38,8 @@ class UserService:
     def verify_credentials(data):
         """
         Verify user credentials.
-        
         Expects data to contain 'username' and 'password'.
-        
-        Args:
-            data (dict): Dictionary containing 'username' and 'password'.
-        
-        Returns:
-            ObjectId: The user ID if credentials are correct, otherwise None.
+        Returns the user ID if credentials are correct, otherwise returns None.
         """
         print(f"Received data: {data}")  # Debug: Log received data
         user = mongo.db.users.find_one({"username": data['username']})
@@ -74,12 +58,8 @@ class UserService:
     def get_user_by_id(user_id):
         """
         Fetch a user by user ID.
-        
-        Args:
-            user_id (str): The user ID to search for.
-        
-        Returns:
-            dict: The user document if found, otherwise None.
+        Expects the 'user_id' as input.
+        Returns the user document if found, otherwise returns None.
         """
         return mongo.db.users.find_one({"_id": ObjectId(user_id)})
 
@@ -87,12 +67,9 @@ class UserService:
     def get_portfolio(user_id):
         """
         Fetch the user's portfolio by user ID.
-        
-        Args:
-            user_id (str): The user ID to search for.
-        
-        Returns:
-            list: The user's portfolio if the user is found, otherwise an empty list.
+        Expects the 'user_id' as input.
+        Converts user_id to ObjectId.
+        Returns the user's portfolio if the user is found, otherwise returns an empty list.
         """
         user = mongo.db.users.find_one({"_id": ObjectId(user_id)}, {"portfolio": 1})
         if user and 'portfolio' in user:
@@ -101,19 +78,16 @@ class UserService:
                 stock['price'] = StockService.get_stock_price(stock['stock_symbol'])
             return portfolio
         return []
-
+    
     @staticmethod
     def get_balance(user_id):
         """
         Fetch the user's balance by user ID.
-        
-        Args:
-            user_id (str): The user ID to search for.
-        
-        Returns:
-            float: The user's balance if the user is found, otherwise 0.
+        Expects the 'user_id' as input.
+        Converts user_id to ObjectId.
+        Returns the user's balance if the user is found, otherwise returns an empty list.
         """
         user = mongo.db.users.find_one({"_id": ObjectId(user_id)}, {"balance": 1})
         if user and 'balance' in user:
             return user['balance']
-        return 0
+        return []

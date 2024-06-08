@@ -10,7 +10,9 @@ const jwt = require('jsonwebtoken');
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.FRONTEND_PORT || 3000;
+const backendHost = process.env.BACKEND_HOST || 'localhost';
+const backendPort = process.env.BACKEND_PORT || 5000;
 
 // Verify that SECRET_KEY and SESSION_SECRET are set
 const secretKey = process.env.SECRET_KEY;
@@ -41,11 +43,11 @@ app.use(session({
   saveUninitialized: true,
   cookie: {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production', // Set to true in production environment
+    secure: process.env.NODE_ENV === 'prod', // Set to true in production environment
+    sameSite: process.env.NODE_ENV === 'prod' ? 'None' : 'Lax', // Set SameSite to None in production
     maxAge: 24 * 60 * 60 * 1000  // Cookie expiration time
   }
 }));
-
 
 // Middleware to require login
 const requireLogin = (req, res, next) => {
@@ -73,6 +75,11 @@ const attachToken = (req, res, next) => {
   next();
 };
 
+// Helper function to get backend URL
+const getBackendUrl = (endpoint) => {
+  return `http://${backendHost}:${backendPort}${endpoint}`;
+};
+
 // Routes
 
 // Render the sign-up page
@@ -84,7 +91,7 @@ app.get('/signup', (req, res) => {
 app.post('/signup', async (req, res) => {
   const { username, password } = req.body;
   try {
-    const response = await axios.post('http://localhost:5000/auth/register', { username, password });
+    const response = await axios.post(getBackendUrl('/auth/register'), { username, password });
     if (response.data.message === 'User registered successfully') {
       req.session.user = username; // Set the session user
       req.session.token = response.data.token; // Set the session token
@@ -112,7 +119,7 @@ app.post('/signin', async (req, res) => {
   try {
     debug(`Received signin request for user: ${username}`);
     
-    const response = await axios.post('http://localhost:5000/auth/verify_credentials', { username, password });
+    const response = await axios.post(getBackendUrl('/auth/verify_credentials'), { username, password });
     if (response.data.message === 'Credentials verified') {
       req.session.user = username; // Set the session user
       req.session.token = response.data.token; // Set the session token
@@ -156,7 +163,7 @@ app.get('/', requireLogin, attachToken, (req, res) => {
 
 // Route to serve the leaderboard view
 app.get('/leaderboard', requireLogin, attachToken, (req, res) => {
-  res.render('leaderboard', { title: 'Leaderboard', user: req.session.user  });
+  res.render('leaderboard', { title: 'Leaderboard', user: req.session.user });
 });
 
 // Render the about page
@@ -170,11 +177,11 @@ app.get('/trade', requireLogin, attachToken, async (req, res) => {
   try {
     const token = req.session.token;  // Use the token stored in the session
 
-    const portfolioResponse = await axios.get('http://localhost:5000/portfolio/stocks', {
+    const portfolioResponse = await axios.get(getBackendUrl('/portfolio/stocks'), {
       headers: { 'Authorization': `Bearer ${token}` }
     });
 
-    const balanceResponse = await axios.get('http://localhost:5000/portfolio/balance', {
+    const balanceResponse = await axios.get(getBackendUrl('/portfolio/balance'), {
       headers: { 'Authorization': `Bearer ${token}` }
     });
 
@@ -192,7 +199,7 @@ app.get('/trade', requireLogin, attachToken, async (req, res) => {
 // Render the stocks page with available stocks
 app.get('/stocks', requireLogin, attachToken, async (req, res) => {
   try {
-    const response = await axios.get('http://localhost:5000/stocks');
+    const response = await axios.get(getBackendUrl('/stocks'));
     const stocks = response.data;
 
     debug(`Fetched stocks data`);
