@@ -9,11 +9,9 @@ block content
     h1 Trade
     .welcome-transactions-container
       .welcome-container
-        
         h3 Welcome, #{user}
         if balance
           h3 Balance: $<span id="balance"></span>
-
       .transactions
         form
           .transaction-group
@@ -32,7 +30,6 @@ block content
           .transaction-group
             button(type="button" id="buyButton" class="transaction-button") Buy
             button(type="button" id="sellButton" class="transaction-button") Sell
-
     if portfolio.length
       .portfolio-container 
         table.portfolio-table
@@ -50,5 +47,3 @@ block content
     else
       center
         p You have no stocks in your portfolio.
-
-    

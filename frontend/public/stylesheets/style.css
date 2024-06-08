@@ -1,3 +1,6 @@
+/*!***************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/scss/styles.scss ***!
+  \***************************************************************************************************************/
 body {
   background-color: rgb(167, 143, 134);
 }
@@ -285,5 +288,3 @@ main {
 .welcome-container h3 {
   margin-top: 0px;
 }
-
-/*# sourceMappingURL=style.css.map */

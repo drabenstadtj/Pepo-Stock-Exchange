@@ -40,11 +40,12 @@ app.use(session({
   resave: false,
   saveUninitialized: true,
   cookie: {
-    sameSite: 'lax', // Ensures the cookie is sent in all contexts
+    httpOnly: true,
     secure: process.env.NODE_ENV === 'production', // Set to true in production environment
     maxAge: 24 * 60 * 60 * 1000  // Cookie expiration time
   }
 }));
+
 
 // Middleware to require login
 const requireLogin = (req, res, next) => {

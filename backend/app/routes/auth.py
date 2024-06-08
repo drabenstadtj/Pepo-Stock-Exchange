@@ -5,6 +5,7 @@ import datetime
 from functools import wraps
 import os
 from dotenv import load_dotenv
+import logging
 
 # Load environment variables from .env file
 load_dotenv()
@@ -16,9 +17,6 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'default-secret-key')
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 def token_required(f):
-    """
-    Decorator to ensure a valid JWT token is present in the request header.
-    """
     @wraps(f)
     def decorated(*args, **kwargs):
         token = request.headers.get('Authorization')
@@ -26,7 +24,6 @@ def token_required(f):
             return jsonify({'message': 'Token is missing!'}), 403
 
         try:
-            # Extract token from 'Bearer <token>' format
             token = token.split()[1]
             data = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
             user_id = data['user_id']
@@ -35,7 +32,7 @@ def token_required(f):
         except jwt.InvalidTokenError:
             return jsonify({'message': 'Token is invalid!'}), 403
         except Exception as e:
-            print(f"Token verification error: {e}")
+            logging.error(f"Token verification error: {e}")
             return jsonify({'message': 'Token verification failed!'}), 403
 
         return f(user_id, *args, **kwargs)
@@ -44,33 +41,21 @@ def token_required(f):
 
 @bp.route('/verify_credentials', methods=['POST'])
 def verify_credentials():
-    """
-    Verify user credentials and generate a JWT token if valid.
-    
-    Expects JSON payload with 'username' and 'password'.
-    Returns a JWT token if credentials are valid.
-    """
     data = request.get_json()
-    print(f"Received request data: {data}")  # Debug: Log received request data
+    logging.info(f"Received request data: {data}")
     user_id = UserService.verify_credentials(data)
     if user_id:
         token = jwt.encode({
             'user_id': str(user_id),
             'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1)
         }, SECRET_KEY, algorithm="HS256")
-        print(f"Generated token: {token}")  # Debug: Log generated token
+        logging.info(f"Generated token: {token}")
         return jsonify({"message": "Credentials verified", "token": token}), 200
     else:
         return jsonify({"error": "Invalid username or password"}), 401
 
 @bp.route('/register', methods=['POST'])
 def register():
-    """
-    Register a new user.
-    
-    Expects JSON payload with 'username' and 'password'.
-    Returns a success message upon successful registration.
-    """
     data = request.get_json()
     result = UserService.register_user(data)
     return jsonify(result)
@@ -78,12 +63,6 @@ def register():
 @bp.route('/get_user_id', methods=['GET'])
 @token_required
 def get_user_id(current_user):
-    """
-    Fetch the user ID by username.
-    
-    Expects a query parameter 'username'.
-    Returns the user ID if found, or an error message if not found.
-    """
     username = request.args.get('username')
     user_id = UserService.get_user_id(username)
     if user_id:
