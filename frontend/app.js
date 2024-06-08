@@ -57,6 +57,7 @@ app.use(cors({
   origin: `http://${backendHost}:${backendPort}`, // Allow only your backend URL
   credentials: true
 }));
+debug(`http://${backendHost}:${backendPort}`)
 
 // Middleware to require login
 const requireLogin = (req, res, next) => {
