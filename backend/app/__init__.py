@@ -9,7 +9,7 @@ mongo = PyMongo()
 def create_app(config_name='prod'):
     app = Flask(__name__)
     app.config.from_object(config_by_name[config_name])
-    CORS(app) 
+    CORS(app, origins=["http://localhost:3000"]) 
 
     # Initialize PyMongo
     mongo.init_app(app)
