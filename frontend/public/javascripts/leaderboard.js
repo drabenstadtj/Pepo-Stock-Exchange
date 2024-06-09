@@ -4,12 +4,11 @@ document.addEventListener("DOMContentLoaded", () => {
   async function fetchLeaderboard() {
     try {
       // Fetch the leaderboard data from the server
-      const response = await fetch('http://localhost:5000/leaderboard', {
+      const response = await fetch('http://192.168.68.250:5000/leaderboard', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-        },
-        mode: 'cors',  // Ensure CORS mode is set
+        }
       });
 
       if (!response.ok) {
