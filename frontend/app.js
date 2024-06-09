@@ -11,7 +11,6 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 const app = express();
 const port = process.env.FRONTEND_PORT || 3000;
-const backendHost = process.env.BACKEND_HOST || 'localhost';
 const backendPort = process.env.BACKEND_PORT || 5000;
 const isProduction = process.env.NODE_CONFIG === 'prod';
 
@@ -19,6 +18,9 @@ const isProduction = process.env.NODE_CONFIG === 'prod';
 const secretKey = process.env.SECRET_KEY;
 const sessionSecret = process.env.SESSION_SECRET;
 const signupPasscode = process.env.SIGNUP_PASSCODE;
+
+// Pass environment variables to Pug templates
+app.locals.BACKEND_PORT = process.env.BACKEND_PORT;
 
 if (!secretKey) {
   console.error('Error: SECRET_KEY is not set in the environment variables.');
@@ -79,7 +81,7 @@ const attachToken = (req, res, next) => {
 
 // Helper function to get backend URL
 const getBackendUrl = (endpoint) => {
-  return `http://${backendHost}:${backendPort}${endpoint}`;
+  return `http://localhost:${backendPort}${endpoint}`;
 };
 
 // Routes
