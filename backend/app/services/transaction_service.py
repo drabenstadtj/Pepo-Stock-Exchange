@@ -142,9 +142,9 @@ class TransactionService:
                 }
                 mongo.db.transactions.insert_one(transaction)
 
+
                 # Adjust stock price
-                new_price = StockService.calculate_new_price(stock_symbol, quantity, is_buying=True)
-                StockService.update_stock_price(stock_symbol, new_price)
+                StockService.update_stock_price(stock_symbol, quantity, is_buying=False)
 
                 return {"message": "Stock sold successfully"}
             return {"message": "User not found"}
