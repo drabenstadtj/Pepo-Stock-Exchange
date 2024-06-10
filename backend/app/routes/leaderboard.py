@@ -13,16 +13,27 @@ def get_leaderboard():
     """
     if request.method == 'OPTIONS':
         response = make_response()
-        response.headers.add("Access-Control-Allow-Origin", "http://localhost:3000")  # Adjust this if you need specific origins
+        response.headers.add("Access-Control-Allow-Origin", "*")  # Adjust this if you need specific origins
         response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
         response.headers.add("Access-Control-Allow-Methods", "GET,OPTIONS")
         response.headers.add("Access-Control-Allow-Credentials", "true")
         return response, 204
+    
     try:
         # Retrieve the leaderboard from the service
         leaderboard = LeaderboardService.get_leaderboard()
-        # Return the leaderboard data as JSON with a 200 status code
-        return jsonify(leaderboard), 200
+        # Create the response
+        response = jsonify(leaderboard)
+        response.headers.add("Access-Control-Allow-Origin", "*")  # Adjust this if you need specific origins
+        response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
+        response.headers.add("Access-Control-Allow-Methods", "GET,OPTIONS")
+        response.headers.add("Access-Control-Allow-Credentials", "true")
+        return response, 200
     except Exception as e:
-        # Return an error message and a 500 status code if an exception occurs
-        return jsonify({'error': str(e)}), 500
+        # Create the error response
+        response = jsonify({'error': str(e)})
+        response.headers.add("Access-Control-Allow-Origin", "*")  # Adjust this if you need specific origins
+        response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
+        response.headers.add("Access-Control-Allow-Methods", "GET,OPTIONS")
+        response.headers.add("Access-Control-Allow-Credentials", "true")
+        return response, 500
