@@ -27,7 +27,7 @@ def create_app(config_name='prod'):
 
     @app.before_request
     def log_request():
-        logger.debug(f"Request: {request.method} {request.url}")
+        logger.debug(f"Request: {request.method} {request.url} {request.host}")
         logger.debug(f"Request Headers: {dict(request.headers)}")
         if request.method in ['POST', 'PUT', 'PATCH'] and request.json:
             logger.debug(f"Request JSON Body: {request.json}")
