@@ -42,8 +42,8 @@ document.addEventListener("DOMContentLoaded", () => {
           <h3>${stock.symbol}</h3>
           <p>Name: ${stock.name}</p>
           <p>Sector: ${stock.sector}</p>
-          <p>Low: ${stock.low.toFixed(2)}</p>
-          <p>High: ${stock.high.toFixed(2)}</p>
+          <p>Low: $${stock.low.toFixed(2)}</p>
+          <p>High: $${stock.high.toFixed(2)}</p>
         `;
         symbolCell.appendChild(symbolSpan);
         symbolCell.appendChild(popupDiv);
@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
         // Create and append the price cell
         const priceCell = document.createElement('td');
-        priceCell.textContent = stock.price.toFixed(2);
+        priceCell.textContent = "$" + stock.price.toFixed(2);
         row.appendChild(priceCell);
   
         // Create and append the change cell

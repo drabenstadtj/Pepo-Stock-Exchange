@@ -131,4 +131,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
   // Add event listener to the stockSymbol input
   stockSymbolInput.addEventListener('input', clearOtherInputs);
+
+  // Add event listeners to portfolio table rows
+  document.querySelectorAll('.portfolio-table tbody tr').forEach(row => {
+    row.addEventListener('click', function() {
+      const stockSymbol = this.cells[0].textContent.trim();
+      stockSymbolInput.value = stockSymbol;
+      clearOtherInputs();  // Clear other input fields when a row is clicked
+    });
+  });
 });
