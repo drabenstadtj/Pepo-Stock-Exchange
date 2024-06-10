@@ -93,54 +93,54 @@ The frontend, built with Express.js and Pug, provides a user-friendly interface 
 ### Authentication
 
 - POST /auth/register
-     * Registers a new user.
-    Request body: { "username": "your_username", "password": "your_password" }
+     * Registers a new user.\
+    Request body: { "username": "your_username", "password": "your_password" }\ 
     Response: { "message": "User registered successfully" }
 
 - POST /auth/verify_credentials
-     * Verifies user credentials and issues a JWT token.
-    Request body: { "username": "your_username", "password": "your_password" }
+     * Verifies user credentials and issues a JWT token.\
+    Request body: { "username": "your_username", "password": "your_password" }\
     Response: { "message": "Credentials verified", "token": "your_jwt_token" }
 
 ### Portfolio
 
 - GET /portfolio/stocks
-     * Fetches the user's portfolio.
-    Requires a valid JWT token.
+     * Fetches the user's portfolio.\
+    Requires a valid JWT token.\
     Response: JSON array of user's stocks.
 
 - GET /portfolio/balance
-     * Fetches the user's balance.
-    Requires a valid JWT token.
+     * Fetches the user's balance.\
+    Requires a valid JWT token.\
     Response: { "balance": user_balance }
 
 - GET /portfolio/assets_value
-     * Fetches the total value of the user's assets.
-    Requires a valid JWT token.
+     * Fetches the total value of the user's assets.\
+    Requires a valid JWT token.\
     Response: { "assets_value": total_assets_value }
 
 ### Stocks
 
 - GET /stocks/
-     * Fetches all stocks.
+     * Fetches all stocks.\
     Response: JSON array of stocks.
 
 - GET /stocks/
-     * Fetches the current price of a stock.
+     * Fetches the current price of a stock.\
     Response: { "symbol": "stock_symbol", "price": stock_price }
 
 ### Transactions
 
 - POST /transactions/buy
-     * Buys a stock.
-    Request body: { "stock_symbol": "symbol", "quantity": quantity }
-    Requires a valid JWT token.
+     * Buys a stock.\
+    Request body: { "stock_symbol": "symbol", "quantity": quantity }\
+    Requires a valid JWT token.\
     Response: { "message": "Stock purchased successfully" }
 
 - POST /transactions/sell
-     * Sells a stock.
-    Request body: { "stock_symbol": "symbol", "quantity": quantity }
-    Requires a valid JWT token.
+     * Sells a stock.\
+    Request body: { "stock_symbol": "symbol", "quantity": quantity }\
+    Requires a valid JWT token.\
     Response: { "message": "Stock sold successfully" }
 
 ###Configuration
