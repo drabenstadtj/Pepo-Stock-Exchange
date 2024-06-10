@@ -1,9 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
   const leaderboardBody = document.getElementById('leaderboard-body');
-  const stockSymbolInput = document.getElementById('stockSymbol');
-  const stockPriceInput = document.getElementById('stockPrice');
-  const numberOfSharesInput = document.getElementById('numberOfShares');
-  const totalPriceInput = document.getElementById('totalPrice');
 
   async function fetchLeaderboard() {
     try {
@@ -74,15 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return `$${value.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
   }
 
-  function clearOtherInputs() {
-    stockPriceInput.value = '';
-    numberOfSharesInput.value = '';
-    totalPriceInput.value = '';
-  }
 
-  // Add event listener to the stockSymbol input
-  stockSymbolInput.addEventListener('input', clearOtherInputs);
-  
 
   // Fetch leaderboard data immediately and then every 10 seconds
   fetchLeaderboard();

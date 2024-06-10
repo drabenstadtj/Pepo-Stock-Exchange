@@ -1,6 +1,10 @@
 document.addEventListener("DOMContentLoaded", function() {
   const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
+  const stockSymbolInput = document.getElementById('stockSymbol');
+  const stockPriceInput = document.getElementById('stockPrice');
+  const numberOfSharesInput = document.getElementById('numberOfShares');
+  const totalPriceInput = document.getElementById('totalPrice');
+  
   if (!token) {
     alert('User is not authenticated');
     window.location.href = '/signin';  // Redirect to sign-in page if not authenticated
@@ -112,4 +116,13 @@ document.addEventListener("DOMContentLoaded", function() {
   function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
+
+  function clearOtherInputs() {
+    stockPriceInput.value = '';
+    numberOfSharesInput.value = '';
+    totalPriceInput.value = '';
+  }
+
+  // Add event listener to the stockSymbol input
+  stockSymbolInput.addEventListener('input', clearOtherInputs);
 });
