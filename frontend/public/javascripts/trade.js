@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", function() {
       return;
     }
 
-    fetch(`http://localhost:${backendPort}/transactions/${type}`, {
+    fetch(`https://db.copland.lol/transactions/${type}`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
