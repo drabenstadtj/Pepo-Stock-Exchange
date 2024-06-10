@@ -88,3 +88,20 @@ class StockService:
         except Exception as e:
             print("Error updating stock prices: ", str(e))
             raise e
+        
+    @staticmethod
+    def calculate_new_price(stock_symbol, quantity, is_buying):
+        stock = mongo.db.stocks.find_one({"symbol": stock_symbol})
+        if not stock:
+            raise ValueError("Stock not found")
+
+        # Simple model: price change proportional to quantity bought/sold
+        price_change_factor = 0.001  # Adjust this factor as needed
+        price_change = price_change_factor * quantity
+
+        if is_buying:
+            new_price = stock['price'] + price_change
+        else:
+            new_price = stock['price'] - price_change
+
+        return new_price
