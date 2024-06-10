@@ -90,7 +90,7 @@ class StockService:
             raise e
         
     @staticmethod
-    def calculate_new_price(stock_symbol, quantity, is_buying):
+    def update_stock_price(stock_symbol, quantity, is_buying):
         stock = mongo.db.stocks.find_one({"symbol": stock_symbol})
         if not stock:
             raise ValueError("Stock not found")
@@ -103,5 +103,11 @@ class StockService:
             new_price = stock['price'] + price_change
         else:
             new_price = stock['price'] - price_change
+
+        # Update the stock price in the database
+        mongo.db.stocks.update_one(
+            {"symbol": stock_symbol},
+            {"$set": {"price": new_price, "last_update": datetime.now()}}
+        )
 
         return new_price
