@@ -1,7 +1,7 @@
 import os
 from app import create_app
 
-config_name = os.getenv('FLASK_CONFIG', 'dev')  # Default to 'prod' if not set
+config_name = os.getenv('FLASK_CONFIG', 'dev')  # Default to 'dev' if not set
 port = int(os.getenv('BACKEND_PORT', 5000))  # Default to 5000 if not set
 
 app = create_app(config_name=config_name)

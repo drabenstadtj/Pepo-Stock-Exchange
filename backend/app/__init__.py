@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from .config import config_by_name
 from flask_pymongo import PyMongo
 import logging
@@ -11,11 +11,8 @@ def create_app(config_name='prod'):
     app.config.from_object(config_by_name[config_name])
 
     # Setup CORS using the configuration
-    logging.basicConfig(level=logging.INFO)
     cors_origins = app.config['CORS_ORIGINS'].split(',')
-    app.logger.log(msg=cors_origins, level=logging.INFO)
-
-    CORS(app, origins=cors_origins)
+    CORS(app, resources={r"/*": {"origins": cors_origins}}, supports_credentials=True)
 
     # Initialize PyMongo
     mongo.init_app(app)
@@ -29,5 +26,23 @@ def create_app(config_name='prod'):
         logging.basicConfig(level=logging.INFO)
     else:
         logging.basicConfig(level=logging.DEBUG)
+
+    logger = logging.getLogger(__name__)
+
+    @app.before_request
+    def log_request():
+        logger.debug(f"Request: {request.method} {request.url}")
+        logger.debug(f"Request Headers: {dict(request.headers)}")
+        if request.json:
+            logger.debug(f"Request Body: {request.json}")
+        elif request.form:
+            logger.debug(f"Request Form: {request.form}")
+
+    @app.after_request
+    def log_response(response):
+        logger.debug(f"Response: {response.status_code}")
+        logger.debug(f"Response Headers: {dict(response.headers)}")
+        logger.debug(f"Response Body: {response.get_data(as_text=True)}")
+        return response
 
     return app
