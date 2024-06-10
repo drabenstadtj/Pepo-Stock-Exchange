@@ -89,7 +89,6 @@ class StockService:
             print("Error updating stock prices: ", str(e))
             raise e
         
-    class StockService:
     @staticmethod
     def update_stock_price(stock_symbol, quantity, is_buying):
         try:
