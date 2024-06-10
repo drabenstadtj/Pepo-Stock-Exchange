@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     async function fetchStocks() {
       try {
         // Fetch the stock data from the server
-        const response = await fetch(`https://db.copland.lol/stocks`, {
+        const response = await fetch(`http://db.copland.lol/stocks`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
