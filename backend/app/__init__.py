@@ -10,18 +10,12 @@ def create_app(config_name='prod'):
     app = Flask(__name__)
     app.config.from_object(config_by_name[config_name])
 
-    # Setup CORS using the configuration
-    cors_origins = app.config['CORS_ORIGINS'].split(',')
-    
-
     # Initialize PyMongo
     mongo.init_app(app)
 
     # Register blueprints
     from .routes import register_routes
     register_routes(app)
-
-    CORS(app, supports_credentials=True)
 
     # Configure logging
     if config_name == 'prod':
