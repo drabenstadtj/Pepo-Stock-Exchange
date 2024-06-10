@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function() {
   const stockPriceInput = document.getElementById('stockPrice');
   const numberOfSharesInput = document.getElementById('numberOfShares');
   const totalPriceInput = document.getElementById('totalPrice');
-  
+
   if (!token) {
     alert('User is not authenticated');
     window.location.href = '/signin';  // Redirect to sign-in page if not authenticated
@@ -122,6 +122,12 @@ document.addEventListener("DOMContentLoaded", function() {
     numberOfSharesInput.value = '';
     totalPriceInput.value = '';
   }
+
+  // Add event listener to validate numberOfShares input
+  numberOfSharesInput.addEventListener('input', () => {
+    // Remove decimal part if it exists
+    numberOfSharesInput.value = numberOfSharesInput.value.split('.')[0];
+  });
 
   // Add event listener to the stockSymbol input
   stockSymbolInput.addEventListener('input', clearOtherInputs);
