@@ -89,39 +89,54 @@ class StockService:
             print("Error updating stock prices: ", str(e))
             raise e
         
+    class StockService:
     @staticmethod
     def update_stock_price(stock_symbol, quantity, is_buying):
-        stock = mongo.db.stocks.find_one({"symbol": stock_symbol})
-        if not stock:
-            raise ValueError("Stock not found")
+        try:
+            stock = mongo.db.stocks.find_one({"symbol": stock_symbol})
+            if not stock:
+                raise ValueError(f"Stock '{stock_symbol}' not found")
 
-        # Simple model: price change proportional to quantity bought/sold
-        price_change_factor = 0.001  # Adjust this factor as needed
-        price_change = price_change_factor * quantity
+            # Simple model: price change proportional to quantity bought/sold
+            price_change_factor = 0.1  # Adjust this factor as needed
+            price_change = price_change_factor * quantity
 
-        if is_buying:
-            new_price = stock['price'] + price_change
-        else:
-            new_price = stock['price'] - price_change
+            if is_buying:
+                new_price = stock['price'] + price_change
+            else:
+                new_price = stock['price'] - price_change
 
-        old_price = stock['price']
+            old_price = stock['price']
 
-        # Calculate the new price based on the percentage change
-        new_high = max(stock.get('high', new_price), new_price)
-        new_low = min(stock.get('low', new_price), new_price)
-        # Calculate the price change
-        price_change = new_price - old_price
+            # Calculate the new price based on the percentage change
+            new_high = max(stock.get('high', new_price), new_price)
+            new_low = min(stock.get('low', new_price), new_price)
+            # Calculate the price change
+            price_change = new_price - old_price
 
-        # Update the stock with the new price, high, low, and change
-        mongo.db.stocks.update_one(
-            {'_id': stock['_id']},
-            {'$set': {
-                'price': new_price,
-                'high': new_high,
-                'low': new_low,
-                'change': price_change,
-                'last_update': datetime.now()
-            }}
-        )
-        
-        return new_price
+            # Update the stock with the new price, high, low, and change
+            result = mongo.db.stocks.update_one(
+                {'_id': stock['_id']},
+                {'$set': {
+                    'price': new_price,
+                    'high': new_high,
+                    'low': new_low,
+                    'change': price_change,
+                    'last_update': datetime.now()
+                }}
+            )
+
+            if result.matched_count == 0:
+                raise RuntimeError(f"Failed to update stock '{stock_symbol}' in the database")
+
+            return new_price
+
+        except ValueError as ve:
+            print(f"ValueError: {ve}")
+            return {"error": str(ve)}
+        except RuntimeError as re:
+            print(f"RuntimeError: {re}")
+            return {"error": str(re)}
+        except Exception as e:
+            print(f"Exception: {e}")
+            return {"error": "An unexpected error occurred"}
