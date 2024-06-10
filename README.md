@@ -1,183 +1,242 @@
-# Pepo Exchange
+Great! Now that I have both the backend and frontend code, I can create a comprehensive README file for your project.
 
-The simulated stock market application is a comprehensive web-based platform designed to provide users with a realistic stock trading experience. This project integrates a Flask-based backend with a MongoDB database and an Express.js frontend using Pug templating.
+## README.md
 
-The backend is responsible for handling all the business logic, data processing, and user interactions with the database. It includes features like user authentication (registration and login), stock management (fetching current stock prices and sectors), transaction handling (buying and selling stocks), and portfolio management (viewing owned stocks and balances). Stock prices are dynamically updated based on Google Trends data to simulate real market interest, making the application more engaging and realistic.
+```markdown
+# Pepo Stock Exchange
 
-Scheduled tasks are implemented to update stock prices every hour, ensuring that the data remains current. This involves a script that fetches the latest trends and adjusts stock prices accordingly. The backend is structured with clear separation of concerns, organized into routes, services, and scripts to ensure maintainability and scalability.
+## Description
 
-The frontend, built with Express.js and Pug, provides a user-friendly interface where users can sign up, log in, manage their portfolios, view stock information, and perform trades. Each part of the application is neatly organized into Pug templates for consistent layout and design. The interface is designed to be intuitive and responsive.
+Pepo Exchange is a simulated stock market application that provides users with a realistic stock trading experience. This web-based platform integrates a Flask-based backend with a MongoDB database and an Express.js frontend using Pug templating.
 
-## Frontend
+The backend handles all business logic, data processing, and user interactions with the database. Key features include user authentication (registration and login), stock management (fetching current stock prices and sectors), transaction handling (buying and selling stocks), and portfolio management (viewing owned stocks and balances). Stock prices are dynamically updated based on Google Trends data to simulate real market interest, making the application more engaging and realistic.
 
-## Overview
+Scheduled tasks update stock prices every hour, ensuring the data remains current. The backend is structured with clear separation of concerns, organized into routes, services, and scripts to ensure maintainability and scalability.
 
-The frontend of the simulated stock market application is built with Express.js and Pug templating. It includes user authentication pages (sign up and sign in), a dashboard for viewing and managing portfolios, a trading page for buying and selling stocks, and stock information pages. The frontend uses Pug templates for a consistent look and feel, with partials for reusable elements like the header and navigation. It communicates with the backend through API calls to ensure users have access to the latest data, making stock trading activities smooth and responsive.
-
-## Directory Structure
-
-```
-Pepo-Stock-Exchange/
-┣ backend/
-┃ ┣ app/
-┃ ┃ ┣ routes/
-┃ ┃ ┃ ┣ auth.py
-┃ ┃ ┃ ┣ leaderboard.py
-┃ ┃ ┃ ┣ portfolio.py
-┃ ┃ ┃ ┣ stocks.py
-┃ ┃ ┃ ┣ transactions.py
-┃ ┃ ┃ ┗ __init__.py
-┃ ┃ ┣ services/
-┃ ┃ ┃ ┣ leaderboard_service.py
-┃ ┃ ┃ ┣ stock_service.py
-┃ ┃ ┃ ┣ transaction_service.py
-┃ ┃ ┃ ┣ trends_service.py
-┃ ┃ ┃ ┗ user_service.py
-┃ ┃ ┣ config.py
-┃ ┃ ┗ __init__.py
-┃ ┣ data/
-┃ ┃ ┣ initial_data.json
-┃ ┃ ┗ StockNames.xlsx
-┃ ┣ initialize_stocks.py
-┃ ┣ requirements.txt
-┃ ┣ run.py
-┃ ┣ test.py
-┃ ┗ update_stock_prices.py
-┣ frontend/
-┃ ┣ config/
-┃ ┃ ┗ config.js
-┃ ┣ public/
-┃ ┃ ┣ images/
-┃ ┃ ┃ ┗ JSc2YO1.gif
-┃ ┃ ┣ javascripts/
-┃ ┃ ┃ ┣ leaderboard.js
-┃ ┃ ┃ ┗ trade.js
-┃ ┃ ┗ stylesheets/
-┃ ┃   ┣ style.css
-┃ ┃   ┗ style.css.map
-┃ ┣ src/
-┃ ┃ ┗ scss/
-┃ ┃   ┣ styles.scss
-┃ ┃   ┗ _variables.scss
-┃ ┣ views/
-┃ ┃ ┣ about.pug
-┃ ┃ ┣ index.pug
-┃ ┃ ┣ layout.pug
-┃ ┃ ┣ leaderboard.pug
-┃ ┃ ┣ signin.pug
-┃ ┃ ┣ signup.pug
-┃ ┃ ┣ stocks.pug
-┃ ┃ ┣ trade.pug
-┃ ┃ ┣ _clock.pug
-┃ ┃ ┣ _header.pug
-┃ ┃ ┗ _navigation.pug
-┃ ┣ app.js
-┃ ┣ package-lock.json
-┃ ┗ package.json
-┣ .gitignore
-┗ README.md
-```
+The frontend, built with Express.js and Pug, provides a user-friendly interface where users can sign up, log in, manage their portfolios, view stock information, and perform trades. The interface is designed to be intuitive and responsive.
 
 ## Features
 
-- **User Authentication**: Users can register and log in to their accounts.
-- **Dashboard**: View and manage user portfolio, including owned stocks and balances.
-- **Stock Management**: View available stocks and their current prices.
-- **Transactions**: Buy and sell stocks through a user-friendly interface.
-- **About Page**: Information about the application and its functionalities.
-- **Responsive Design**: Ensures usability across different devices and screen sizes.
+- User Authentication (Registration and Login)
+- Stock Management (Fetch Current Prices and Sectors)
+- Transaction Handling (Buy and Sell Stocks)
+- Portfolio Management (View Owned Stocks and Balances)
+- Dynamic Stock Prices based on Google Trends Data
+- Scheduled Tasks to Update Stock Prices
 
-## Pages and Templates
+## File Structure
+
+```
+📦Pepo-Stock-Exchange
+ ┣ 📂.git
+ ┣ 📂backend
+ ┃ ┣ 📂app
+ ┃ ┃ ┣ 📂routes
+ ┃ ┃ ┃ ┣ 📜auth.py
+ ┃ ┃ ┃ ┣ 📜leaderboard.py
+ ┃ ┃ ┃ ┣ 📜portfolio.py
+ ┃ ┃ ┃ ┣ 📜stocks.py
+ ┃ ┃ ┃ ┣ 📜transactions.py
+ ┃ ┃ ┃ ┗ 📜__init__.py
+ ┃ ┃ ┣ 📂services
+ ┃ ┃ ┃ ┣ 📜leaderboard_service.py
+ ┃ ┃ ┃ ┣ 📜stock_service.py
+ ┃ ┃ ┃ ┣ 📜transaction_service.py
+ ┃ ┃ ┃ ┣ 📜trends_service.py
+ ┃ ┃ ┃ ┗ 📜user_service.py
+ ┃ ┃ ┣ 📜config.py
+ ┃ ┃ ┗ 📜__init__.py
+ ┃ ┣ 📜requirements.txt
+ ┃ ┣ 📜run.py
+ ┃ ┗ 📜wsgi.py
+ ┣ 📂frontend
+ ┃ ┣ 📂config
+ ┃ ┃ ┗ 📜config.js
+ ┃ ┣ 📂public
+ ┃ ┃ ┣ 📂images
+ ┃ ┃ ┣ 📂javascripts
+ ┃ ┃ ┃ ┣ 📜bundle.js
+ ┃ ┃ ┃ ┣ 📜leaderboard.js
+ ┃ ┃ ┃ ┣ 📜stocks.js
+ ┃ ┃ ┃ ┗ 📜trade.js
+ ┃ ┃ ┗ 📂stylesheets
+ ┃ ┣ 📂src
+ ┃ ┃ ┗ 📂scss
+ ┃ ┃ ┃ ┣ 📜main.js
+ ┃ ┃ ┃ ┣ 📜styles.scss
+ ┃ ┃ ┃ ┗ 📜_variables.scss
+ ┃ ┣ 📂views
+ ┃ ┃ ┣ 📜about.pug
+ ┃ ┃ ┣ 📜index.pug
+ ┃ ┃ ┣ 📜layout.pug
+ ┃ ┃ ┣ 📜leaderboard.pug
+ ┃ ┃ ┣ 📜signin.pug
+ ┃ ┃ ┣ 📜signup.pug
+ ┃ ┃ ┣ 📜stocks.pug
+ ┃ ┃ ┣ 📜trade.pug
+ ┃ ┃ ┣ 📜_clock.pug
+ ┃ ┃ ┣ 📜_header.pug
+ ┃ ┃ ┗ 📜_navigation.pug
+ ┃ ┣ 📜app.js
+ ┃ ┣ 📜package-lock.json
+ ┃ ┣ 📜package.json
+ ┃ ┗ 📜webpack.config.js
+ ┣ 📂utility
+ ┃ ┣ 📂data
+ ┃ ┃ ┣ 📜initialize_stocks.py
+ ┃ ┃ ┣ 📜initial_data.json
+ ┃ ┃ ┗ 📜StockNames.xlsx
+ ┃ ┣ 📂stock_updater
+ ┃ ┃ ┣ 📜trends_updater.py
+ ┃ ┃ ┗ 📜update_stock_prices.py
+ ┃ ┗ 📜test.py
+ ┣ 📜.gitignore
+ ┗ 📜README.md
+```
+
+## Installation
+
+### Backend
+
+1. **Clone the repository:**
+   ```sh
+   git clone <repository-url>
+   cd backend
+   ```
+
+2. **Create and activate a virtual environment:**
+   ```sh
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
+
+3. **Install the required packages:**
+   ```sh
+   pip install -r requirements.txt
+   ```
+
+4. **Set up environment variables:**
+   Create a `.env` file in the `backend` directory and add the following variables:
+   ```env
+   SECRET_KEY=your_secret_key
+   SESSION_SECRET=your_session_secret
+   DATABASE_URI=mongodb://localhost:27017/
+   CORS_ORIGINS=*
+   ```
+
+5. **Run the backend server:**
+   ```sh
+   python run.py
+   ```
+
+### Frontend
+
+1. **Navigate to the frontend directory:**
+   ```sh
+   cd frontend
+   ```
+
+2. **Install the required packages:**
+   ```sh
+   npm install
+   ```
+
+3. **Set up environment variables:**
+   Create a `.env` file in the `frontend` directory and add the following variables:
+   ```env
+   FRONTEND_PORT=3000
+   BACKEND_PORT=5000
+   NODE_ENV=development
+   SECRET_KEY=your_secret_key
+   SESSION_SECRET=your_session_secret
+   SIGNUP_PASSCODE=your_signup_passcode
+   ```
+
+4. **Run the frontend server:**
+   ```sh
+   npm start
+   ```
+
+## Usage
+
+### Accessing the Application
+
+1. **Visit the signup page to create a new account:**
+   ```sh
+   http://localhost:3000/signup
+   ```
+
+2. **Login using your credentials:**
+   ```sh
+   http://localhost:3000/signin
+   ```
+
+3. **Explore the features such as viewing stocks, managing your portfolio, and trading stocks.**
+
+## API Documentation
 
 ### Authentication
 
-- **signup.pug**: Template for user registration.
-- **signin.pug**: Template for user login.
+- **POST /auth/register**
+  - Registers a new user.
+  - Request body: `{ "username": "your_username", "password": "your_password" }`
+  - Response: `{ "message": "User registered successfully" }`
 
-### Dashboard
-
-- **dashboard.pug**: Displays user portfolio and options for trading.
-
-### Stocks
-
-- **stocks.pug**: Displays available stocks and their current prices.
-- **trade.pug**: Template for executing buy and sell transactions.
-
-### Other Pages
-
-- **index.pug**: Main landing page template.
-- **about.pug**: Provides information about the application.
-
-### Layout and Partials
-
-- **layout.pug**: Base layout template for consistent header and footer.
-- **\_header.pug**: Partial template for the header.
-- **\_navigation.pug**: Partial template for navigation.
-- **\_clock.pug**: Partial template for displaying the current time.
-
-## Backend
-
-## Overview
-
-This project is a simulated stock market backend built using Flask, MongoDB, and Python. It includes user authentication, stock management, transaction handling, and portfolio management functionalities. The stock prices are dynamically updated based on Google Trends data to simulate market interest.
-
-## Directory Structure
-
-```
-.
-├── backend
-│ ├── app
-│ │ ├── init.py
-│ │ ├── config.py
-│ │ ├── routes
-│ │ │ ├── init.py
-│ │ │ ├── auth.py
-│ │ │ ├── stocks.py
-│ │ │ ├── transactions.py
-│ │ │ └── portfolio.py
-│ │ ├── services
-│ │ │ ├── init.py
-│ │ │ ├── user_service.py
-│ │ │ ├── stock_service.py
-│ │ │ └── transaction_service.py
-│ ├── venv
-│ ├── .env
-│ ├── pycache
-│ └── scripts
-│ └── update_stock_prices.py
-└── README.md
-```
-
-## Features
-
-- **User Authentication**: Users can register and log in to their accounts.
-- **Stock Management**: View and manage stocks, including fetching current stock prices and sectors.
-- **Transactions**: Buy and sell stocks, with transactions logged in the database.
-- **Portfolio Management**: Users can view their portfolio, including owned stocks and balances.
-- **Dynamic Stock Prices**: Stock prices are updated hourly based on Google Trends data to reflect market interest.
-
-## API Endpoints
-
-### Authentication
-
-- `POST /auth/register`: Register a new user.
-- `GET /auth/get_user_id`: Fetch user ID by username.
-
-### Stocks
-
-- `GET /stocks/`: Fetch all stocks.
-
-### Transactions
-
-- `POST /transactions/buy`: Buy a stock.
-- `POST /transactions/sell`: Sell a stock.
-- `GET /transactions/`: Fetch all transactions or transactions for a specific user.
+- **POST /auth/verify_credentials**
+  - Verifies user credentials and issues a JWT token.
+  - Request body: `{ "username": "your_username", "password": "your_password" }`
+  - Response: `{ "message": "Credentials verified", "token": "your_jwt_token" }`
 
 ### Portfolio
 
-- `GET /portfolio/balance`: Fetch the user's balance by user ID.
-- `GET /portfolio/stocks`: Fetch the user's stock portfolio by user ID.
+- **GET /portfolio/stocks**
+  - Fetches the user's portfolio.
+  - Requires a valid JWT token.
+  - Response: JSON array of user's stocks.
 
-## Scheduled Tasks
+- **GET /portfolio/balance**
+  - Fetches the user's balance.
+  - Requires a valid JWT token.
+  - Response: `{ "balance": user_balance }`
 
-- **Stock Price Update**: A script (`scripts/update_stock_prices.py`) is set up to update stock prices every 30 seconds based on Google Trends data. This script can be scheduled to run as a background task.
+- **GET /portfolio/assets_value**
+  - Fetches the total value of the user's assets.
+  - Requires a valid JWT token.
+  - Response: `{ "assets_value": total_assets_value }`
+
+### Stocks
+
+- **GET /stocks/**
+  - Fetches all stocks.
+  - Response: JSON array of stocks.
+
+- **GET /stocks/:symbol**
+  - Fetches the current price of a stock.
+  - Response: `{ "symbol": "stock_symbol", "price": stock_price }`
+
+### Transactions
+
+- **POST /transactions/buy**
+  - Buys a stock.
+  - Request body: `{ "stock_symbol": "symbol", "quantity": quantity }`
+  - Requires a valid JWT token.
+  - Response: `{ "message": "Stock purchased successfully" }`
+
+- **POST /transactions/sell**
+  - Sells a stock.
+  - Request body: `{ "stock_symbol": "symbol", "quantity": quantity }`
+  - Requires a valid JWT token.
+  - Response: `{ "message": "Stock sold successfully" }`
+
+## Configuration
+
+- **Environment Variables:**
+  - Ensure all required environment variables are set in the `.env` files in both the backend and frontend directories.
+
+## Running Tests
+
+- **Backend Tests:**
+  - To run tests for the backend, use the following command:
+    ```sh
+    python -m unittest discover
+    ```
