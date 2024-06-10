@@ -91,3 +91,21 @@ class UserService:
         if user and 'balance' in user:
             return user['balance']
         return []
+    
+    @staticmethod
+    def get_assets_value(user_id):
+        """
+        Fetch the user's total assets value by user ID.
+        Expects the 'user_id' as input.
+        Converts user_id to ObjectId.
+        Returns the total value of the user's assets if the user is found, otherwise returns 0.
+        """
+        assets_value = 0
+        user = mongo.db.users.find_one({"_id": ObjectId(user_id)}, {"portfolio": 1})
+        if user and 'portfolio' in user:
+            portfolio = user['portfolio']
+            for stock in portfolio:
+                price = StockService.get_stock_price(stock['stock_symbol'])
+                if price is not None:
+                    assets_value += stock['quantity'] * price
+        return assets_value

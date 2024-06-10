@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   async function fetchLeaderboard() {
     try {
       // Fetch the leaderboard data from the server
-      const response = await fetch(`http://192.168.68.250:${backendPort}/leaderboard`, {
+      const response = await fetch(`http://localhost:${backendPort}/leaderboard`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

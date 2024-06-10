@@ -200,11 +200,16 @@ app.get('/trade', requireLogin, attachToken, async (req, res) => {
       headers: { 'Authorization': `Bearer ${token}` }
     });
 
+    const assetsValueResponse = await axios.get(getBackendUrl('/portfolio/assets_value'), {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+
     const portfolio = portfolioResponse.data;
     const balance = balanceResponse.data;
+    const assets_value = assetsValueResponse.data;
 
     debug(`Fetched portfolio and balance for user ${req.session.user}`);
-    res.render('trade', { user: req.session.user, portfolio, balance, token });
+    res.render('trade', { user: req.session.user, portfolio, balance, assets_value, token });
   } catch (error) {
     debug(`Error fetching portfolio for user ${req.session.user}: ${error.message}`);
     res.status(500).send("Internal Server Error");

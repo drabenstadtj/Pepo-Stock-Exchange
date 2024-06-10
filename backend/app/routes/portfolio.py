@@ -66,3 +66,18 @@ def get_balance(user_id):
         return jsonify(balance), 200, {'Content-Type': 'application/json'}
     except Exception as e:
         return jsonify({'error': str(e)}), 500, {'Content-Type': 'application/json'}
+
+@bp.route('/assets_value', methods=['GET'])
+@token_required
+def get_assets_value(user_id):
+    """
+    Fetch the user's balance.
+    
+    Expects a valid JWT token.
+    Returns the user's balance if the user is found.
+    """
+    try:
+        assets_value= UserService.get_assets_value(user_id)
+        return jsonify(assets_value), 200, {'Content-Type': 'application/json'}
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500, {'Content-Type': 'application/json'}
