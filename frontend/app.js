@@ -223,7 +223,7 @@ app.get('/stocks', requireLogin, attachToken, async (req, res) => {
     const stocks = response.data;
 
     debug(`Fetched stocks data`);
-    res.render('stocks', { stocks, user: req.session.user });
+    res.render('stocks', { stocks, user: req.session.user, token });
   } catch (error) {
     debug(`Error fetching stocks data: ${error.message}`);
     res.status(500).send("Internal Server Error");
