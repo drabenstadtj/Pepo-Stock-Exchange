@@ -42,7 +42,7 @@ def create_app(config_name='prod'):
     def log_response(response):
         logger.debug(f"Response: {response.status_code}")
         logger.debug(f"Response Headers: {dict(response.headers)}")
-        logger.debug(f"Response Body: {response.get_data(as_text=True)}")
+        #logger.debug(f"Response Body: {response.get_data(as_text=True)}")
         return response
 
     return app
