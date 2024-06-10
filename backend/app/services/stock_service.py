@@ -104,10 +104,24 @@ class StockService:
         else:
             new_price = stock['price'] - price_change
 
-        # Update the stock price in the database
-        mongo.db.stocks.update_one(
-            {"symbol": stock_symbol},
-            {"$set": {"price": new_price, "last_update": datetime.now()}}
-        )
+        old_price = stock['price']
 
+        # Calculate the new price based on the percentage change
+        new_high = max(stock.get('high', new_price), new_price)
+        new_low = min(stock.get('low', new_price), new_price)
+        # Calculate the price change
+        price_change = new_price - old_price
+
+        # Update the stock with the new price, high, low, and change
+        mongo.db.stocks.update_one(
+            {'_id': stock['_id']},
+            {'$set': {
+                'price': new_price,
+                'high': new_high,
+                'low': new_low,
+                'change': price_change,
+                'last_update': datetime.now()
+            }}
+        )
+        
         return new_price
