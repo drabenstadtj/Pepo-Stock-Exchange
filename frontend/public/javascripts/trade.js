@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function() {
   document.getElementById('getPriceButton').addEventListener('click', function() {
     const symbol = document.getElementById('stockSymbol').value;
     if (symbol) {
-      fetch(`http://localhost:${backendPort}/stocks/${symbol}`, {
+      fetch(`https://db.copland.lol/stocks/${symbol}`, {
         method: 'GET',
         headers: { 'Authorization': `Bearer ${token}` },
         credentials: 'include'
@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function() {
       return;
     }
 
-    fetch(`http://localhost:${backendPort}/transactions/${type}`, {
+    fetch(`https://db.copland.lol/transactions/${type}`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
