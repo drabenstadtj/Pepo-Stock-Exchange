@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function() {
   document.getElementById('getPriceButton').addEventListener('click', function() {
     const symbol = document.getElementById('stockSymbol').value;
     if (symbol) {
-      fetch(`http://db.copland.lol/stocks/${symbol}`, {
+      fetch(`https://db.copland.lol/stocks/${symbol}`, {
         method: 'GET',
         headers: { 'Authorization': `Bearer ${token}` }
       })
