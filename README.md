@@ -93,7 +93,7 @@ The frontend, built with Express.js and Pug, provides a user-friendly interface 
 ### Authentication
 
 - POST /auth/register
-    Registers a new user.
+    * Registers a new user.
     Request body: { "username": "your_username", "password": "your_password" }
     Response: { "message": "User registered successfully" }
 
