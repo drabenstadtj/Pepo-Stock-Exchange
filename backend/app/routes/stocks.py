@@ -1,9 +1,13 @@
 from flask import Blueprint, jsonify
 from app.services.stock_service import StockService
 import traceback
+from flask_cors import CORS
 
 # Create a Blueprint for stock-related routes
 bp = Blueprint('stocks', __name__, url_prefix='/stocks')
+
+#Apply CORS
+CORS(bp, supports_credentials=True)
 
 @bp.route('/', methods=['GET'])
 def get_stocks():

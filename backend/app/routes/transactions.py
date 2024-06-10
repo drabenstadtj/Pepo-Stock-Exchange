@@ -3,9 +3,13 @@ from app.services.transaction_service import TransactionService
 import jwt
 from functools import wraps
 import os
+from flask_cors import CORS
 
 # Create a Blueprint for transaction-related routes
 bp = Blueprint('transactions', __name__, url_prefix='/transactions')
+
+#Apply CORS
+CORS(bp, supports_credentials=True)
 
 # Load environment variables
 SECRET_KEY = os.getenv('SECRET_KEY', 'default-secret-key')

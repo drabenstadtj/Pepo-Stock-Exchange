@@ -14,3 +14,4 @@ def register_routes(app):
     app.register_blueprint(transactions_bp)
     app.register_blueprint(portfolio_bp)
     app.register_blueprint(leaderboard_bp)
+

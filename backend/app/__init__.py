@@ -12,7 +12,7 @@ def create_app(config_name='prod'):
 
     # Setup CORS using the configuration
     cors_origins = app.config['CORS_ORIGINS'].split(',')
-    CORS(app)
+    
 
     # Initialize PyMongo
     mongo.init_app(app)
@@ -20,6 +20,8 @@ def create_app(config_name='prod'):
     # Register blueprints
     from .routes import register_routes
     register_routes(app)
+
+    CORS(app, supports_credentials=True)
 
     # Configure logging
     if config_name == 'prod':
