@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 from app.services.leaderboard_service import LeaderboardService
 
 # Create a Blueprint for leaderboard-related routes
