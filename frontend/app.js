@@ -221,6 +221,7 @@ app.get('/stocks', requireLogin, attachToken, async (req, res) => {
   try {
     const response = await axios.get(getBackendUrl('/stocks'));
     const stocks = response.data;
+    const token = req.session.token;  
 
     debug(`Fetched stocks data`);
     res.render('stocks', { stocks, user: req.session.user, token });
