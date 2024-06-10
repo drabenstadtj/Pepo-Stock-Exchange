@@ -8,15 +8,19 @@ import logging
 # Create a Blueprint for authentication-related routes
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
+# Decorator to check if a valid token is provided
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
+        # Get the token from the Authorization header
         token = request.headers.get('Authorization')
         if not token:
             return jsonify({'message': 'Token is missing!'}), 403
 
         try:
+            # Split the token from the Bearer schema
             token = token.split()[1]
+            # Decode the token using the secret key
             data = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=["HS256"])
             user_id = data['user_id']
         except jwt.ExpiredSignatureError:
@@ -31,12 +35,14 @@ def token_required(f):
 
     return decorated
 
+# Route to verify user credentials and issue a token
 @bp.route('/verify_credentials', methods=['POST'])
 def verify_credentials():
     data = request.get_json()
     logging.info(f"Received request data: {data}")
     user_id = UserService.verify_credentials(data)
     if user_id:
+        # Generate JWT token valid for 24 hours
         token = jwt.encode({
             'user_id': str(user_id),
             'exp': datetime.datetime.now() + datetime.timedelta(hours=24)
@@ -46,12 +52,14 @@ def verify_credentials():
     else:
         return jsonify({"error": "Invalid username or password"}), 401
 
+# Route to register a new user
 @bp.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
     result = UserService.register_user(data)
     return jsonify(result)
 
+# Route to get the user ID by username, token required
 @bp.route('/get_user_id', methods=['GET'])
 @token_required
 def get_user_id(current_user):

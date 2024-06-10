@@ -230,6 +230,7 @@ app.get('/stocks', requireLogin, attachToken, async (req, res) => {
   }
 });
 
+
 // General error handler middleware
 app.use((err, req, res, next) => {
   debug(`Internal Server Error: ${err.message}`);
