@@ -143,7 +143,23 @@ The frontend, built with Express.js and Pug, provides a user-friendly interface 
     Requires a valid JWT token.\
     Response: { "message": "Stock sold successfully" }
 
-###Configuration
+### Configuration
 
 - Environment Variables:
      * Ensure all required environment variables are set in the .env files in both the backend and frontend directories.
+    ```
+    # Configuration for Flask backend
+    FLASK_CONFIG=dev
+    BACKEND_HOST=localhost  # The host for the Flask backend
+    BACKEND_PORT=5000       # The port for the Flask backend
+
+    # Secrets and database configuration
+    SECRET_KEY=your-secret-key
+    SESSION_SECRET=your-session-secret
+    DATABASE_URI=mongodb-database-uri
+
+    # Configuration for Node.js frontend
+    NODE_CONFIG=dev
+    FRONTEND_PORT=3000      # The port on which the Node.js frontend will run
+    SIGNUP_PASSCODE=passcode
+    ```
