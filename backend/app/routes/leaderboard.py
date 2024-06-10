@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, make_response
 from app.services.leaderboard_service import LeaderboardService
 
 # Create a Blueprint for leaderboard-related routes
@@ -12,7 +12,12 @@ def get_leaderboard():
     Returns a JSON object with the leaderboard data.
     """
     if request.method == 'OPTIONS':
-        return '', 204
+        response = make_response()
+        response.headers.add("Access-Control-Allow-Origin", "*")  # Adjust this if you need specific origins
+        response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
+        response.headers.add("Access-Control-Allow-Methods", "GET,OPTIONS")
+        response.headers.add("Access-Control-Allow-Credentials", "true")
+        return response, 204
     try:
         # Retrieve the leaderboard from the service
         leaderboard = LeaderboardService.get_leaderboard()
