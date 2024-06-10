@@ -12,7 +12,7 @@ def create_app(config_name='prod'):
 
     # Setup CORS using the configuration
     cors_origins = app.config['CORS_ORIGINS'].split(',')
-    CORS(app, resources={r"/*": {"origins": cors_origins}}, supports_credentials=True)
+    CORS(app, resources={r"./*": {"origins": cors_origins}}, supports_credentials=True)
 
     # Initialize PyMongo
     mongo.init_app(app)
