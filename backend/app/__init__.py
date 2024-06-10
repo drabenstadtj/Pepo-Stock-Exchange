@@ -33,10 +33,10 @@ def create_app(config_name='prod'):
     def log_request():
         logger.debug(f"Request: {request.method} {request.url}")
         logger.debug(f"Request Headers: {dict(request.headers)}")
-        if request.json:
-            logger.debug(f"Request Body: {request.json}")
+        if request.method in ['POST', 'PUT', 'PATCH'] and request.json:
+            logger.debug(f"Request JSON Body: {request.json}")
         elif request.form:
-            logger.debug(f"Request Form: {request.form}")
+            logger.debug(f"Request Form Body: {request.form}")
 
     @app.after_request
     def log_response(response):
