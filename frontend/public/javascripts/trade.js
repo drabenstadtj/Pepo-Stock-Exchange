@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function() {
   document.getElementById('getPriceButton').addEventListener('click', function() {
     const symbol = document.getElementById('stockSymbol').value;
     if (symbol) {
-      fetch(`http://localhost:5000/stocks/${symbol}`, {
+      fetch(`http://localhost:${backendPort}/stocks/${symbol}`, {
         method: 'GET',
         headers: { 'Authorization': `Bearer ${token}` }
       })
@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", function() {
       return;
     }
 
-    fetch(`http://localhost:5000/transactions/${type}`, {
+    fetch(`http://localhost:${backendPort}/transactions/${type}`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,

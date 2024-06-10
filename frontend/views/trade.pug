@@ -4,7 +4,8 @@ block content
   meta(name="csrf-token" content=token)
   meta(name="balance" content=balance)
   script(src="/javascripts/trade.js")
-
+  script.
+    const backendPort = "#{BACKEND_PORT}";
   .container
     h1 Trade
     .welcome-transactions-container

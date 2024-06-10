@@ -15,6 +15,7 @@ def get_leaderboard():
         # Retrieve the leaderboard from the service
         leaderboard = LeaderboardService.get_leaderboard()
         # Return the leaderboard data as JSON with a 200 status code
+        
         return jsonify(leaderboard), 200
     except Exception as e:
         # Return an error message and a 500 status code if an exception occurs
