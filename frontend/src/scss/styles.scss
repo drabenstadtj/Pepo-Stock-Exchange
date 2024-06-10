@@ -312,3 +312,7 @@ main {
 .welcome-container h3 {
   margin-top: 0px;
 }
+
+.portfolio-table tbody tr:hover {
+  cursor: pointer;
+}
