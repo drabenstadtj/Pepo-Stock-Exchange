@@ -2,6 +2,7 @@ from app import mongo
 from bson import ObjectId
 from werkzeug.security import generate_password_hash, check_password_hash
 import logging
+from .stock_service import StockService
 
 class UserService:
     @staticmethod

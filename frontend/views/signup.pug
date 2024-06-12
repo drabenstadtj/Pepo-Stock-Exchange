@@ -11,7 +11,7 @@ html(lang="en")
     hr
     .signup-container
       h1 Sign Up
-      form(action="/signup", method="POST")
+      form(action="/auth/signup", method="POST")
         input(type="text", name="username", id="username", placeholder="Username", required)
         br
         input(type="password", name="password", id="password", placeholder="Password", required)
@@ -24,5 +24,5 @@ html(lang="en")
         button(type="submit") Sign Up
 
       h1 Sign In 
-      form(action='/signin', method='get')
+      form(action='/auth/signin', method='get')
         button(type='submit') Sign In
