@@ -1,9 +1,12 @@
+import logging
 from app import mongo
 from bson import ObjectId
 from .trends_service import TrendsService
 from datetime import datetime
 import time
 import random
+
+logger = logging.getLogger(__name__)
 
 class StockService:
     @staticmethod
@@ -17,14 +20,16 @@ class StockService:
             list: A list of all stocks in the database.
         """
         try:
+            logger.info("Fetching all stocks from the database")
             stocks_cursor = mongo.db.stocks.find()
             stocks = []
             for stock in stocks_cursor:
                 stock['_id'] = str(stock['_id'])  # Convert ObjectId to string
                 stocks.append(stock)
+            logger.info(f"Fetched {len(stocks)} stocks from the database")
             return stocks
         except Exception as e:
-            print("Error fetching stocks: ", str(e))
+            logger.error(f"Error fetching stocks: {e}")
             raise e
 
     @staticmethod
@@ -39,12 +44,15 @@ class StockService:
             float: The current price of the stock if found, otherwise None.
         """
         try:
+            logger.info(f"Fetching stock price for {stock_symbol}")
             stock = mongo.db.stocks.find_one({"symbol": stock_symbol})
             if stock:
+                logger.info(f"Current price for {stock_symbol} is {stock['price']}")
                 return stock['price']
+            logger.warning(f"Stock {stock_symbol} not found")
             return None
         except Exception as e:
-            print(f"Error fetching stock price for {stock_symbol}: {e}")
+            logger.error(f"Error fetching stock price for {stock_symbol}: {e}")
             raise e
 
     @staticmethod
@@ -56,6 +64,7 @@ class StockService:
         Updates the high, low, and change values of each stock.
         """
         try:
+            logger.info("Updating stock prices for all stocks")
             stocks = mongo.db.stocks.find()
             for stock in stocks:
                 sector = stock.get('sector')
@@ -83,15 +92,28 @@ class StockService:
                             'last_update': datetime.now()
                         }}
                     )
+                    logger.info(f"Updated stock {stock['symbol']} with new price {new_price}")
                     # Wait between updates to avoid hitting rate limits
                     time.sleep(5)
         except Exception as e:
-            print("Error updating stock prices: ", str(e))
+            logger.error(f"Error updating stock prices: {e}")
             raise e
         
     @staticmethod
     def update_stock_price(stock_symbol, quantity, is_buying):
+        """
+        Update the price of a stock based on buying or selling quantity.
+        
+        Args:
+            stock_symbol (str): The symbol of the stock.
+            quantity (int): The quantity of stock being bought or sold.
+            is_buying (bool): True if buying, False if selling.
+        
+        Returns:
+            float: The new price of the stock if successful, otherwise an error message.
+        """
         try:
+            logger.info(f"Updating stock price for {stock_symbol}")
             stock = mongo.db.stocks.find_one({"symbol": stock_symbol})
             if not stock:
                 raise ValueError(f"Stock '{stock_symbol}' not found")
@@ -128,14 +150,15 @@ class StockService:
             if result.matched_count == 0:
                 raise RuntimeError(f"Failed to update stock '{stock_symbol}' in the database")
 
+            logger.info(f"Updated stock {stock_symbol} with new price {new_price}")
             return new_price
 
         except ValueError as ve:
-            print(f"ValueError: {ve}")
+            logger.error(f"ValueError: {ve}")
             return {"error": str(ve)}
         except RuntimeError as re:
-            print(f"RuntimeError: {re}")
+            logger.error(f"RuntimeError: {re}")
             return {"error": str(re)}
         except Exception as e:
-            print(f"Exception: {e}")
+            logger.error(f"Exception: {e}")
             return {"error": "An unexpected error occurred"}

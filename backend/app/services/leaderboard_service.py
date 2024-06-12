@@ -1,5 +1,8 @@
+import logging
 from app import mongo
 from .stock_service import StockService
+
+logger = logging.getLogger(__name__)
 
 class LeaderboardService:
     @staticmethod
@@ -14,6 +17,8 @@ class LeaderboardService:
             list: A list of dictionaries containing the leaderboard data.
         """
         try:
+            logger.info("Fetching leaderboard data")
+
             # Fetch all users from the database
             users_cursor = mongo.db.users.find()
             leaderboard = []
@@ -40,8 +45,9 @@ class LeaderboardService:
             # Sort the leaderboard by net worth in descending order
             leaderboard.sort(key=lambda x: x['netWorth'], reverse=True)
             
+            logger.info("Leaderboard data fetched successfully")
             return leaderboard
         except Exception as e:
             # Log the error and raise it for further handling
-            print("Error fetching leaderboard data: ", str(e))
+            logger.error(f"Error fetching leaderboard data: {e}")
             raise e
