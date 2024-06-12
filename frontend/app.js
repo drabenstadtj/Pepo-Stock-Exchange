@@ -1,26 +1,24 @@
 const express = require('express');
 const session = require('express-session');
-const debug = require('debug')('app');
-const axios = require('axios');
 const path = require('path');
 const dotenv = require('dotenv');
+const axios = require('axios');
 const jwt = require('jsonwebtoken');
+const { createProxyMiddleware } = require('http-proxy-middleware');
+const morgan = require('morgan');
 
-// Load environment variables from .env file located in the parent directory
+// Load environment variables from .env file
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 const app = express();
 const port = process.env.FRONTEND_PORT || 3000;
 const backendPort = process.env.BACKEND_PORT || 5000;
-const isProduction = process.env.NODE_CONFIG === 'prod';
+const isProduction = process.env.CONFIG === 'production';
 
 // Verify that SECRET_KEY and SESSION_SECRET are set
 const secretKey = process.env.SECRET_KEY;
 const sessionSecret = process.env.SESSION_SECRET;
 const signupPasscode = process.env.SIGNUP_PASSCODE;
-
-// Pass environment variables to Pug templates
-app.locals.BACKEND_PORT = process.env.BACKEND_PORT;
 
 if (!secretKey) {
   console.error('Error: SECRET_KEY is not set in the environment variables.');
@@ -34,40 +32,41 @@ if (!sessionSecret) {
 
 // Set the view engine to Pug and specify the views directory
 app.set('view engine', 'pug');
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, './views'));
 
 // Middleware to parse URL-encoded bodies and serve static files
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, './public')));
 
 // Configure session middleware
 app.use(session({
-  secret: sessionSecret, // Use SESSION_SECRET from .env file
+  secret: sessionSecret,
   resave: false,
   saveUninitialized: true,
   cookie: {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'prod', // Set to true in production environment
-    sameSite: process.env.NODE_ENV === 'prod' ? 'None' : 'Lax', // Set SameSite to None in production
+    secure: isProduction,
+    sameSite: isProduction ? 'None' : 'Lax',
     maxAge: 24 * 60 * 60 * 1000  // Cookie expiration time
   }
 }));
 
+// Add request logging
+app.use(morgan('combined'));
+
 // Middleware to require login
 const requireLogin = (req, res, next) => {
-  debug(`Checking if user is logged in: ${req.session.user}`);
   if (req.session && req.session.token) {
     try {
       const decoded = jwt.verify(req.session.token, secretKey);
       req.user = decoded;
-      next(); // User is logged in, proceed to the next middleware
+      next();
     } catch (err) {
-      debug(`Token verification failed: ${err.message}`);
-      res.redirect('/signin'); // Redirect to sign-in page if token is invalid
+      console.error('Token verification error:', err);
+      res.redirect('/signin');
     }
   } else {
-    debug('User not logged in, redirecting to /signin');
-    res.redirect('/signin'); // Redirect to sign-in page if not logged in
+    res.redirect('/signin');
   }
 };
 
@@ -85,121 +84,92 @@ const getBackendUrl = (endpoint) => {
 };
 
 // Routes
-
-// Render the sign-up page
 app.get('/signup', (req, res) => {
   res.render('signup', { user: req.session.user, isProduction });
 });
 
-// Render the sign-up page
-app.get('/signup', (req, res) => {
-  res.render('signup', { user: req.session.user, isProduction });
-});
-
-// Handle sign-up form submission
 app.post('/signup', async (req, res) => {
   const { username, password, passcode } = req.body;
 
   if (isProduction && passcode !== signupPasscode) {
-    debug('Signup failed: Incorrect passcode');
     return res.render('signup', { error: 'Incorrect passcode', isProduction });
   }
 
   try {
     const response = await axios.post(getBackendUrl('/auth/register'), { username, password });
     if (response.data.message === 'User registered successfully') {
-      req.session.user = username; // Set the session user
-      req.session.token = response.data.token; // Set the session token
-      debug(`User ${username} registered successfully`);
-      res.redirect('/'); // Redirect to home page
+      req.session.user = username;
+      req.session.token = response.data.token;
+      res.redirect('/');
     } else {
-      debug(`Signup failed for user ${username}: ${response.data.message}`);
       res.send('Signup failed!');
     }
   } catch (error) {
-    debug(`Signup error for user ${username}: ${error.message}`);
+    console.error('Signup error:', error);
     res.status(500).send('Signup failed!');
   }
 });
 
-// Render the sign-in page
 app.get('/signin', (req, res) => {
   const error = req.query.error;
   res.render('signin', { error, user: req.session.user });
 });
 
-// Handle sign-in form submission
 app.post('/signin', async (req, res) => {
   const { username, password } = req.body;
   try {
-    debug(`Received signin request for user: ${username}`);
-    
     const response = await axios.post(getBackendUrl('/auth/verify_credentials'), { username, password });
     if (response.data.message === 'Credentials verified') {
-      req.session.user = username; // Set the session user
-      req.session.token = response.data.token; // Set the session token
-      debug(`User ${username} signed in successfully`);
+      req.session.user = username;
+      req.session.token = response.data.token;
       req.session.save(err => {
         if (err) {
-          debug(`Session save error: ${err.message}`);
           res.redirect('/signin?error=Session error');
         } else {
-          res.redirect('/'); // Redirect to home page
+          res.redirect('/');
         }
       });
     } else {
-      debug(`Sign in failed for user ${username}: Invalid credentials`);
       res.redirect('/signin?error=Invalid username or password');
     }
   } catch (error) {
-    debug(`Sign in error for user ${username}: ${error.message}`);
+    console.error('Signin error:', error);
     res.redirect('/signin?error=Invalid username or password');
   }
 });
 
-// Handle user logout
 app.get('/logout', (req, res) => {
   req.session.destroy(err => {
     if (err) {
-      debug(`Logout error: ${err.message}`);
+      console.error('Logout error:', err);
       return res.redirect('/');
     }
-    res.clearCookie('connect.sid'); // Clear the session cookie
-    debug(`User logged out successfully`);
-    res.redirect('/signin'); // Redirect to sign-in page
+    res.clearCookie('connect.sid');
+    res.redirect('/signin');
   });
 });
 
-// Render the home page
 app.get('/', requireLogin, attachToken, (req, res) => {
-  debug(`Rendering home page for user ${req.session.user}`);
   res.render('index', { user: req.session.user });
 });
 
-// Route to serve the leaderboard view
 app.get('/leaderboard', requireLogin, attachToken, (req, res) => {
   res.render('leaderboard', { title: 'Leaderboard', user: req.session.user });
 });
 
-// Render the about page
 app.get('/about', requireLogin, attachToken, (req, res) => {
-  debug(`Rendering about page for user ${req.session.user}`);
   res.render('about', { user: req.session.user });
 });
 
-// Render the trade page with user's portfolio and balance
 app.get('/trade', requireLogin, attachToken, async (req, res) => {
   try {
-    const token = req.session.token;  // Use the token stored in the session
-
+    const token = req.session.token;
     const portfolioResponse = await axios.get(getBackendUrl('/portfolio/stocks'), {
       headers: { 'Authorization': `Bearer ${token}` }
     });
-
     const balanceResponse = await axios.get(getBackendUrl('/portfolio/balance'), {
       headers: { 'Authorization': `Bearer ${token}` }
     });
-
     const assetsValueResponse = await axios.get(getBackendUrl('/portfolio/assets_value'), {
       headers: { 'Authorization': `Bearer ${token}` }
     });
@@ -208,41 +178,38 @@ app.get('/trade', requireLogin, attachToken, async (req, res) => {
     const balance = balanceResponse.data;
     const assets_value = assetsValueResponse.data;
 
-    debug(`Fetched portfolio and balance for user ${req.session.user}`);
     res.render('trade', { user: req.session.user, portfolio, balance, assets_value, token });
   } catch (error) {
-    debug(`Error fetching portfolio for user ${req.session.user}: ${error.message}`);
+    console.error('Trade fetch error:', error);
     res.status(500).send("Internal Server Error");
   }
 });
 
-// Render the stocks page with available stocks
 app.get('/stocks', requireLogin, attachToken, async (req, res) => {
   try {
     const response = await axios.get(getBackendUrl('/stocks'));
     const stocks = response.data;
-    const token = req.session.token;  
+    const token = req.session.token;
 
-    debug(`Fetched stocks data`);
     res.render('stocks', { stocks, user: req.session.user, token });
   } catch (error) {
-    debug(`Error fetching stocks data: ${error.message}`);
+    console.error('Stocks fetch error:', error);
     res.status(500).send("Internal Server Error");
   }
 });
 
-
-// General error handler middleware
 app.use((err, req, res, next) => {
-  debug(`Internal Server Error: ${err.message}`);
-  console.error(err.stack); // Log the stack trace to the console
+  console.error('Internal Server Error:', err);
   res.status(500).send('Internal Server Error');
 });
 
-// Start the server
-app.listen(port, () => {
-  debug(`Server is running on http://localhost:${port}`);
-  console.log(`Server is running on http://localhost:${port}`);
-});
-
-module.exports = app;
+if (isProduction) {
+  app.listen(port, () => {
+    console.log(`Server is running in production mode on http://localhost:${port}`);
+  });
+} else {
+  app.use('/api', createProxyMiddleware({ target: `http://localhost:${backendPort}`, changeOrigin: true }));
+  app.listen(port, () => {
+    console.log(`Server is running in development mode on http://localhost:${port}`);
+  });
+}

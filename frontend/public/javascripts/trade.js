@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
+  const apiUrl = window.apiUrl;  // Use the global apiUrl variable
+
   const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
   const stockSymbolInput = document.getElementById('stockSymbol');
   const stockPriceInput = document.getElementById('stockPrice');
@@ -26,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function() {
   document.getElementById('getPriceButton').addEventListener('click', function() {
     const symbol = document.getElementById('stockSymbol').value;
     if (symbol) {
-      fetch(`https://db.copland.lol/stocks/${symbol}`, {
+      fetch(`${apiUrl}/stocks/${symbol}`, {
         method: 'GET',
         headers: { 'Authorization': `Bearer ${token}` },
         credentials: 'include'
@@ -83,7 +85,7 @@ document.addEventListener("DOMContentLoaded", function() {
       return;
     }
 
-    fetch(`https://db.copland.lol/transactions/${type}`, {
+    fetch(`${apiUrl}/transactions/${type}`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -125,19 +127,17 @@ document.addEventListener("DOMContentLoaded", function() {
 
   // Add event listener to validate numberOfShares input
   numberOfSharesInput.addEventListener('input', () => {
-    // Remove decimal part if it exists
     numberOfSharesInput.value = numberOfSharesInput.value.split('.')[0];
   });
 
   // Add event listener to the stockSymbol input
   stockSymbolInput.addEventListener('input', clearOtherInputs);
 
-  // Add event listeners to portfolio table rows
   document.querySelectorAll('.portfolio-table tbody tr').forEach(row => {
     row.addEventListener('click', function() {
       const stockSymbol = this.cells[0].textContent.trim();
       stockSymbolInput.value = stockSymbol;
-      clearOtherInputs();  // Clear other input fields when a row is clicked
+      clearOtherInputs();
     });
   });
 });

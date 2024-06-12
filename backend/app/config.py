@@ -16,6 +16,6 @@ class ProductionConfig(Config):
     DEBUG = False
 
 config_by_name = {
-    'dev': DevelopmentConfig,
-    'prod': ProductionConfig
+    'development': DevelopmentConfig,
+    'production': ProductionConfig
 }

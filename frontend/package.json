@@ -4,18 +4,20 @@
     "cors": "^2.8.5",
     "debug": "^4.3.5",
     "dotenv": "^16.4.5",
+    "dotenv-webpack": "^8.1.0",
     "express": "^4.19.2",
     "express-session": "^1.18.0",
     "jsonwebtoken": "^9.0.2",
     "pug": "^3.0.3"
   },
+  "name": "Pepo Stock Exchange",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
   "scripts": {
-    "build-css": "sass src/scss/styles.scss public/stylesheets/style.css",
-    "build": "webpack --config webpack.config.js",
-    "start-frontend": "webpack --config webpack.config.js --watch",
-    "start-backend": "cd ../backend && python run.py",
-    "run": "concurrently \"npm run start-frontend\" \"npm run start-backend\"",
-    "start-prod": "npm run build && concurrently \"npm run start-frontend\" \"npm run start-backend\""
+    "build": "webpack --config webpack.config.js --mode production",
+    "start": "npm run build && node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
     "babel-loader": "^9.1.3",

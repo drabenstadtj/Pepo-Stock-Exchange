@@ -6,7 +6,7 @@ from flask_cors import CORS
 
 mongo = PyMongo()
 
-def create_app(config_name='prod'):
+def create_app(config_name='development'):
     app = Flask(__name__)
     app.config.from_object(config_by_name[config_name])
 
@@ -18,7 +18,7 @@ def create_app(config_name='prod'):
     register_routes(app)
 
     # Configure logging
-    if config_name == 'prod':
+    if config_name == 'production':
         logging.basicConfig(level=logging.INFO)
     else:
         logging.basicConfig(level=logging.DEBUG)
