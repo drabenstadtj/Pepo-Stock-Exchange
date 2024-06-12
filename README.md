@@ -148,18 +148,12 @@ The frontend, built with Express.js and Pug, provides a user-friendly interface 
 - Environment Variables:
      * Ensure all required environment variables are set in the .env files in both the backend and frontend directories.
     ```
-    # Configuration for Flask backend
-    FLASK_CONFIG=dev
-    BACKEND_HOST=localhost  # The host for the Flask backend
-    BACKEND_PORT=5000       # The port for the Flask backend
-
-    # Secrets and database configuration
-    SECRET_KEY=your-secret-key
-    SESSION_SECRET=your-session-secret
-    DATABASE_URI=mongodb-database-uri
-
-    # Configuration for Node.js frontend
-    NODE_CONFIG=dev
-    FRONTEND_PORT=3000      # The port on which the Node.js frontend will run
-    SIGNUP_PASSCODE=passcode
+     CONFIG=development  # or prod
+     FRONTEND_PORT=3000
+     BACKEND_PORT=5000
+     SECRET_KEY=your_secret_key
+     SESSION_SECRET=your_session_secret
+     SIGNUP_PASSCODE=your_signup_passcode
+     BACKEND_URL=http://localhost:5000  # Use the appropriate URL for your environment
+     DATABASE_URI=mongodb://localhost:27017/gourdstocks
     ```
