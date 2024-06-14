@@ -53,13 +53,21 @@ def update_stock_prices():
         if sector in trends_data:
             old_price = stock['price']
             new_price = calculate_new_price(old_price, trends_data[sector])
-            if not new_price == 0:
+            if not new_price == old_price:
                 change = new_price - old_price
             else:
                 change = stock['change']
             stocks_collection.update_one(
                 {"_id": stock['_id']},
-                {"$set": {"price": new_price, "change": change, "last_update": datetime.utcnow()}}
+                {"$set": 
+                    {
+                        "price": new_price, 
+                        "change": change, 
+                        "last_update": datetime.utcnow(),
+                        'low': min(stock['low'], new_price),
+                        'high': max(stock['high'], new_price)
+                    }
+                }
             )
             print(f"Updated {stock['name']} price to {new_price} (Change: {change})")
 
