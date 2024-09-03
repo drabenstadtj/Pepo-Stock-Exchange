@@ -74,7 +74,10 @@ def update_stock_prices():
         new_price = stock['price'] + price_change
 
         # Calculate the change as the new price minus the old price
-        change = new_price - stock['price']
+        if not new_price == stock['price']:
+            change = new_price - stock['price']
+        else:
+            change = stock['change']
 
         # Update the stock price and other relevant fields
         stocks_collection.update_one(

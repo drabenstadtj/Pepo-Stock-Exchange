@@ -3,6 +3,7 @@ extends layout
 block content
   meta(name="csrf-token" content=token)
   meta(name="balance" content=balance)
+  meta(name="assets_value" content=assets_value)
   script(src="/javascripts/trade.js")
   script.
     const backendPort = "#{BACKEND_PORT}";
@@ -12,7 +13,8 @@ block content
       .welcome-container
         h3 Welcome, #{user}
         if balance
-          h3 Balance: $<span id="balance"></span>
+          h3 Liquid Assets: $<span id="balance"></span>
+          h3 Invested Assets: $<span id="investment"></span>
       .transactions
         form
           .transaction-group
@@ -24,7 +26,7 @@ block content
             input(type="text" id="stockPrice" name="stockPrice" class="transaction-input" readonly)
           .transaction-group
             label(for="numberOfShares" class="transaction-label") Number of Shares:
-            input(type="number" id="numberOfShares" name="numberOfShares" class="transaction-input" min="1")
+            input(type="number" id="numberOfShares" name="numberOfShares" step="1" class="transaction-input" min="1")
           .transaction-group
             label(for="totalPrice" class="transaction-label") Total Price:
             input(type="text" id="totalPrice" name="totalPrice" class="transaction-input" readonly)

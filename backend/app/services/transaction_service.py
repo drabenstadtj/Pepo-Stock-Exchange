@@ -1,7 +1,10 @@
+import logging
 from app import mongo
 from bson import ObjectId
 from .stock_service import StockService
 from datetime import datetime
+
+logger = logging.getLogger(__name__)
 
 class TransactionService:
     @staticmethod
@@ -27,9 +30,12 @@ class TransactionService:
         user_id = ObjectId(user_id)
 
         try:
+            logger.info(f"Initiating buy transaction for user {user_id}, stock {stock_symbol}, quantity {quantity}")
+
             # Fetch the current price of the stock
             price = StockService.get_stock_price(stock_symbol)
             if price is None:
+                logger.warning(f"Stock {stock_symbol} not found")
                 return {"message": "Stock not found"}
 
             # Update user's portfolio and balance
@@ -69,12 +75,19 @@ class TransactionService:
                     }
                     mongo.db.transactions.insert_one(transaction)
 
+                    # Adjust stock price
+                    StockService.update_stock_price(stock_symbol, quantity, is_buying=True)
+
+                    logger.info(f"Buy transaction completed for user {user_id}, stock {stock_symbol}, quantity {quantity}")
                     return {"message": "Stock purchased successfully"}
                 else:
+                    logger.warning(f"User {user_id} has insufficient balance for buying {quantity} of {stock_symbol}")
                     return {"message": "Insufficient balance"}
-            return {"message": "User not found"}
+            else:
+                logger.warning(f"User {user_id} not found")
+                return {"message": "User not found"}
         except Exception as e:
-            print(f"Error during buy transaction: {e}")
+            logger.error(f"Error during buy transaction for user {user_id}, stock {stock_symbol}: {e}")
             return {"message": "Internal Server Error"}
 
     @staticmethod
@@ -100,9 +113,12 @@ class TransactionService:
         user_id = ObjectId(user_id)
 
         try:
+            logger.info(f"Initiating sell transaction for user {user_id}, stock {stock_symbol}, quantity {quantity}")
+
             # Fetch the current price of the stock
             price = StockService.get_stock_price(stock_symbol)
             if price is None:
+                logger.warning(f"Stock {stock_symbol} not found")
                 return {"message": "Stock not found"}
 
             # Update user's portfolio and balance
@@ -117,6 +133,7 @@ class TransactionService:
                                 portfolio.remove(stock)
                             break
                 else:
+                    logger.warning(f"User {user_id} has insufficient quantity of {stock_symbol} to sell")
                     return {"message": "Insufficient stock quantity"}
 
                 # Add total price to user's balance
@@ -139,10 +156,16 @@ class TransactionService:
                 }
                 mongo.db.transactions.insert_one(transaction)
 
+                # Adjust stock price
+                StockService.update_stock_price(stock_symbol, quantity, is_buying=False)
+
+                logger.info(f"Sell transaction completed for user {user_id}, stock {stock_symbol}, quantity {quantity}")
                 return {"message": "Stock sold successfully"}
-            return {"message": "User not found"}
+            else:
+                logger.warning(f"User {user_id} not found")
+                return {"message": "User not found"}
         except Exception as e:
-            print(f"Error during sell transaction: {e}")
+            logger.error(f"Error during sell transaction for user {user_id}, stock {stock_symbol}: {e}")
             return {"message": "Internal Server Error"}
 
     @staticmethod
@@ -160,6 +183,7 @@ class TransactionService:
             list: A list of transactions.
         """
         try:
+            logger.info(f"Fetching transactions for user {user_id}" if user_id else "Fetching all transactions")
             query = {}
             if user_id:
                 query['user_id'] = ObjectId(user_id)
@@ -170,7 +194,8 @@ class TransactionService:
                 transaction['user_id'] = str(transaction['user_id'])
                 transaction['date'] = transaction['date'].isoformat()
                 transaction_list.append(transaction)
+            logger.info(f"Fetched {len(transaction_list)} transactions")
             return transaction_list
         except Exception as e:
-            print(f"Error in get_transactions: {e}")
+            logger.error(f"Error in get_transactions: {e}")
             return {"message": "Internal Server Error"}

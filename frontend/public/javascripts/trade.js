@@ -1,5 +1,11 @@
 document.addEventListener("DOMContentLoaded", function() {
+  const apiUrl = window.apiUrl;  // Use the global apiUrl variable
+
   const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+  const stockSymbolInput = document.getElementById('stockSymbol');
+  const stockPriceInput = document.getElementById('stockPrice');
+  const numberOfSharesInput = document.getElementById('numberOfShares');
+  const totalPriceInput = document.getElementById('totalPrice');
 
   if (!token) {
     alert('User is not authenticated');
@@ -9,6 +15,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
   const balance = document.querySelector('meta[name="balance"]').getAttribute('content');
   document.getElementById('balance').textContent = numberWithCommas(parseFloat(balance).toFixed(2));
+  const investment = document.querySelector('meta[name="assets_value"]').getAttribute('content');
+  document.getElementById('investment').textContent = numberWithCommas(parseFloat(investment).toFixed(2));
 
   document.getElementById('stockSymbol').addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {  // Enter key pressed
@@ -20,9 +28,10 @@ document.addEventListener("DOMContentLoaded", function() {
   document.getElementById('getPriceButton').addEventListener('click', function() {
     const symbol = document.getElementById('stockSymbol').value;
     if (symbol) {
-      fetch(`https://db.copland.lol/stocks/${symbol}`, {
+      fetch(`${apiUrl}/stocks/${symbol}`, {
         method: 'GET',
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { 'Authorization': `Bearer ${token}` },
+        credentials: 'include'
       })
       .then(response => response.json())
       .then(data => {
@@ -76,7 +85,7 @@ document.addEventListener("DOMContentLoaded", function() {
       return;
     }
 
-    fetch(`https://db.copland.lol/transactions/${type}`, {
+    fetch(`${apiUrl}/transactions/${type}`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -109,4 +118,26 @@ document.addEventListener("DOMContentLoaded", function() {
   function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
+
+  function clearOtherInputs() {
+    stockPriceInput.value = '';
+    numberOfSharesInput.value = '';
+    totalPriceInput.value = '';
+  }
+
+  // Add event listener to validate numberOfShares input
+  numberOfSharesInput.addEventListener('input', () => {
+    numberOfSharesInput.value = numberOfSharesInput.value.split('.')[0];
+  });
+
+  // Add event listener to the stockSymbol input
+  stockSymbolInput.addEventListener('input', clearOtherInputs);
+
+  document.querySelectorAll('.portfolio-table tbody tr').forEach(row => {
+    row.addEventListener('click', function() {
+      const stockSymbol = this.cells[0].textContent.trim();
+      stockSymbolInput.value = stockSymbol;
+      clearOtherInputs();
+    });
+  });
 });

@@ -1,11 +1,16 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const Dotenv = require('dotenv-webpack');
 
 module.exports = {
-  mode: 'production', // 'development' or 'production'
-  entry: './src/scss/styles.scss', // Adjust the entry point if necessary
+  mode: process.env.NODE_ENV || 'development', // 'development' or 'production'
+  entry: {
+    leaderboard: './public/javascripts/leaderboard.js',
+    stocks: './public/javascripts/stocks.js',
+    trade: './public/javascripts/trade.js'
+  },
   output: {
-    filename: 'bundle.js',
+    filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'public/javascripts')
   },
   module: {
@@ -30,6 +35,9 @@ module.exports = {
   plugins: [
     new MiniCssExtractPlugin({
       filename: '../stylesheets/style.css'
+    }),
+    new Dotenv({
+      path: path.resolve(__dirname, '../.env'), // Load .env file from the project root
     })
   ],
   devServer: {
@@ -37,6 +45,6 @@ module.exports = {
       directory: path.join(__dirname, 'public')
     },
     compress: true,
-    port: 9000
+    port: process.env.FRONTEND_PORT || 3000
   }
 };

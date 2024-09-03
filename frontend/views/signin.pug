@@ -11,7 +11,7 @@ html(lang="en")
     hr
     .signin-container
       h1 Sign In
-      form(action='/signin', method='post', onsubmit='return trimInput()')
+      form(action='/auth/signin', method='post', onsubmit='return trimInput()')
         div
           input(type='text', id='username', name='username', placeholder='Username', required)
         div
@@ -22,7 +22,7 @@ html(lang="en")
               p #{error}
         button(type='submit') Sign In
       h1 Sign Up 
-      form(action='/signup', method='get')
+      form(action='/auth/signup', method='get')
         button(type='submit') Sign Up
     script.
       function trimInput() {

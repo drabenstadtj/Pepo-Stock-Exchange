@@ -1,4 +1,14 @@
+<<<<<<< HEAD
 backports.tarfile==1.2.0
+=======
+APScheduler==3.10.4
+blinker==1.8.2
+certifi==2024.2.2
+cffi==1.16.0
+charset-normalizer==3.3.2
+click==8.1.7
+colorama==0.4.6
+>>>>>>> bc5033d2621a4bc9d0d429c9ab1308ffa78884d4
 cryptography==42.0.8
 flask-cors==4.0.1
 flask-pymongo==2.3.0
@@ -14,6 +24,13 @@ pyjwt==2.8.0
 python-dotenv==1.0.1
 pytrends==4.9.2
 schedule==1.2.2
+<<<<<<< HEAD
 tomli==2.0.1
 vulture==2.11
+=======
+six==1.16.0
+tzdata==2024.1
+tzlocal==5.2
+urllib3==2.2.1
+>>>>>>> bc5033d2621a4bc9d0d429c9ab1308ffa78884d4
 waitress==3.0.0
