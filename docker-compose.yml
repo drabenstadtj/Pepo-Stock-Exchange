@@ -1,0 +1,76 @@
+version: "3.8"
+
+services:
+  flask-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: flask-backend
+    environment:
+      - FLASK_CONFIG=prod
+      - DATABASE_URI=mongodb://localhost:27017/gourdstocks
+      - SECRET_KEY=9DeWrsMCn4v
+      - BACKEND_PORT=5000
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongo
+      - redis
+    networks:
+      - app-network
+
+  express-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: express-frontend
+    ports:
+      - "3000:3000"
+    #depends_on:
+    #  - flask-backend
+    networks:
+      - app-network
+
+  # mongo:
+  #   image: mongo:latest
+  #   container_name: mongo
+  #   ports:
+  #     - "27017:27017"
+  #   networks:
+  #     - app-network
+
+  # redis:
+  #   image: redis:alpine
+  #   container_name: redis
+  #   ports:
+  #     - "6379:6379"
+  #   networks:
+  #     - app-network
+
+  # celery-worker:
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Dockerfile
+  #   container_name: celery-worker
+  #   command: celery -A app.tasks worker --loglevel=info
+  #   environment:
+  #     - CELERY_BROKER_URL=redis://redis:6379/0
+  #   depends_on:
+  #     - redis
+  #   networks:
+  #     - app-network
+
+  # celery-beat:
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Dockerfile
+  #   container_name: celery-beat
+  #   command: celery -A app.tasks beat --loglevel=info
+  #   depends_on:
+  #     - redis
+  #   networks:
+  #     - app-network
+
+networks:
+  app-network:
+    driver: bridge

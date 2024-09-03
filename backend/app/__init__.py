@@ -1,8 +1,8 @@
 from flask import Flask, request
-from .config import config_by_name
 from flask_pymongo import PyMongo
-import logging
 from flask_cors import CORS
+import logging
+from .config import config_by_name
 
 mongo = PyMongo()
 
@@ -10,19 +10,16 @@ def create_app(config_name='prod'):
     app = Flask(__name__)
     app.config.from_object(config_by_name[config_name])
 
-    # Initialize PyMongo
+    # Initialize extensions
     mongo.init_app(app)
+    CORS(app)
 
     # Register blueprints
     from .routes import register_routes
     register_routes(app)
 
     # Configure logging
-    if config_name == 'prod':
-        logging.basicConfig(level=logging.INFO)
-    else:
-        logging.basicConfig(level=logging.DEBUG)
-
+    logging.basicConfig(level=logging.DEBUG if config_name != 'prod' else logging.INFO)
     logger = logging.getLogger(__name__)
 
     @app.before_request
@@ -38,7 +35,6 @@ def create_app(config_name='prod'):
     def log_response(response):
         logger.debug(f"Response: {response.status_code}")
         logger.debug(f"Response Headers: {dict(response.headers)}")
-        #logger.debug(f"Response Body: {response.get_data(as_text=True)}")
         return response
 
     return app

@@ -12,10 +12,7 @@
   "scripts": {
     "build-css": "sass src/scss/styles.scss public/stylesheets/style.css",
     "build": "webpack --config webpack.config.js",
-    "start-frontend": "webpack --config webpack.config.js --watch",
-    "start-backend": "cd ../backend && python run.py",
-    "run": "concurrently \"npm run start-frontend\" \"npm run start-backend\"",
-    "start-prod": "npm run build && concurrently \"npm run start-frontend\" \"npm run start-backend\""
+    "start-frontend": "node app.js"
   },
   "devDependencies": {
     "babel-loader": "^9.1.3",
